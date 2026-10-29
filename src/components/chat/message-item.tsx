@@ -1,0 +1,228 @@
+"use client";
+
+import React, { useState } from "react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import { ChatMessage, SourceCitation } from "@/lib/types";
+import { useKnowledge } from "@/context/knowledge-context";
+import { Copy, Check, RotateCw, FileText, Sparkles, User } from "lucide-react";
+import { cn } from "@/lib/utils";
+
+interface MessageItemProps {
+  message: ChatMessage;
+  onRegenerate?: () => void;
+  isStreaming?: boolean;
+}
+
+export function MessageItem({ message, onRegenerate, isStreaming }: MessageItemProps) {
+  const { openCitation } = useKnowledge();
+  const [copied, setCopied] = useState(false);
+  const isAssistant = message.role === "assistant";
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(message.content);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  // Convert raw "[1]", "[2]" citation markers in markdown into interactive components
+  const renderCustomMarkdown = (content: string) => {
+    return (
+      <ReactMarkdown
+        remarkPlugins={[remarkGfm]}
+        components={{
+          // Render citation pills for [1], [2]
+          p({ children }) {
+            return (
+              <p className="my-2.5 leading-relaxed text-foreground">
+                {React.Children.map(children, (child) => {
+                  if (typeof child === "string") {
+                    // Match pattern [1], [2], [1, 2]
+                    const parts = child.split(/(\[\d+(?:,\s*\d+)*\])/g);
+                    return parts.map((part, index) => {
+                      const match = part.match(/\[(\d+(?:,\s*\d+)*)\]/);
+                      if (match) {
+                        const numbers = match[1].split(",").map((n) => parseInt(n.trim(), 10));
+                        return (
+                          <span key={index} className="inline-flex gap-1 mx-1 align-baseline">
+                            {numbers.map((num) => {
+                              const citation = message.source_references?.find(
+                                (c) => c.citation_id === num
+                              );
+                              return (
+                                <button
+                                  key={num}
+                                  onClick={() => citation && openCitation(citation)}
+                                  className={cn(
+                                    "inline-flex items-center justify-center px-1.5 py-0.2 text-[11px] font-mono font-medium rounded bg-accent-subtle text-accent border border-accent/20 hover:bg-accent hover:text-accent-foreground transition-all duration-150 cursor-pointer shadow-subtle",
+                                    !citation && "opacity-70 cursor-default"
+                                  )}
+                                  title={
+                                    citation
+                                      ? `Source [${num}]: ${citation.document_title}`
+                                      : `Citation [${num}]`
+                                  }
+                                >
+                                  [{num}]
+                                </button>
+                              );
+                            })}
+                          </span>
+                        );
+                      }
+                      return part;
+                    });
+                  }
+                  return child;
+                })}
+              </p>
+            );
+          },
+          table({ children }) {
+            return (
+              <div className="overflow-x-auto my-3 border border-border rounded-lg shadow-subtle">
+                <table className="w-full text-left text-xs border-collapse bg-surface">{children}</table>
+              </div>
+            );
+          },
+          th({ children }) {
+            return (
+              <th className="px-3 py-2 bg-surface-secondary text-foreground font-semibold border-b border-border">
+                {children}
+              </th>
+            );
+          },
+          td({ children }) {
+            return (
+              <td className="px-3 py-2 text-foreground border-b border-border/60">
+                {children}
+              </td>
+            );
+          },
+          code({ className, children, ...props }) {
+            return (
+              <code
+                className="bg-surface-secondary px-1.5 py-0.5 rounded text-[13px] font-mono text-foreground border border-border/50"
+                {...props}
+              >
+                {children}
+              </code>
+            );
+          },
+          pre({ children }) {
+            return (
+              <pre className="p-3 my-2.5 rounded-lg bg-surface-secondary border border-border text-xs font-mono overflow-x-auto text-foreground">
+                {children}
+              </pre>
+            );
+          },
+        }}
+      >
+        {content}
+      </ReactMarkdown>
+    );
+  };
+
+  return (
+    <div
+      className={cn(
+        "py-4 px-4 sm:px-6 transition-colors animate-fade-in",
+        isAssistant ? "bg-transparent" : "bg-surface-secondary/30 rounded-xl"
+      )}
+    >
+      <div className="max-w-3xl mx-auto flex gap-4">
+        {/* Role Icon */}
+        <div
+          className={cn(
+            "w-7 h-7 rounded-lg flex-shrink-0 flex items-center justify-center text-xs mt-0.5 select-none",
+            isAssistant
+              ? "bg-accent-subtle text-accent border border-accent/20"
+              : "bg-surface border border-border text-foreground shadow-subtle"
+          )}
+        >
+          {isAssistant ? <Sparkles className="w-3.5 h-3.5" /> : <User className="w-3.5 h-3.5" />}
+        </div>
+
+        {/* Content */}
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center justify-between mb-1">
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-semibold text-foreground">
+                {isAssistant ? "KnowledgeOS" : "You"}
+              </span>
+              {isAssistant && message.model_identifier && (
+                <span className="text-[11px] font-mono text-muted-foreground bg-surface-secondary px-1.5 py-0.2 rounded border border-border">
+                  {message.model_identifier.replace(":free", "")}
+                </span>
+              )}
+            </div>
+
+            {/* Actions for Assistant message */}
+            {isAssistant && !isStreaming && (
+              <div className="flex items-center gap-1 opacity-70 hover:opacity-100 transition-opacity">
+                <button
+                  onClick={handleCopy}
+                  className="p-1 rounded text-muted-foreground hover:text-foreground hover:bg-surface-hover transition-colors"
+                  title="Copy answer"
+                  aria-label="Copy response"
+                >
+                  {copied ? <Check className="w-3.5 h-3.5 text-status-success" /> : <Copy className="w-3.5 h-3.5" />}
+                </button>
+                {onRegenerate && (
+                  <button
+                    onClick={onRegenerate}
+                    className="p-1 rounded text-muted-foreground hover:text-foreground hover:bg-surface-hover transition-colors"
+                    title="Regenerate answer"
+                    aria-label="Regenerate response"
+                  >
+                    <RotateCw className="w-3.5 h-3.5" />
+                  </button>
+                )}
+              </div>
+            )}
+          </div>
+
+          {/* Markdown Content */}
+          <div className="text-sm prose-apple">
+            {renderCustomMarkdown(message.content)}
+            {isStreaming && (
+              <span className="inline-block w-1.5 h-4 ml-1 bg-accent animate-pulse align-middle" />
+            )}
+          </div>
+
+          {/* Source Citations Section */}
+          {isAssistant && message.source_references && message.source_references.length > 0 && (
+            <div className="mt-4 pt-3 border-t border-border/80">
+              <div className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                <FileText className="w-3.5 h-3.5 text-accent" />
+                Verified Citations ({message.source_references.length})
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                {message.source_references.map((citation) => (
+                  <button
+                    key={citation.citation_id}
+                    onClick={() => openCitation(citation)}
+                    className="text-left p-2.5 rounded-lg bg-surface border border-border hover:border-accent/40 hover:bg-surface-hover transition-all group flex items-start gap-2 shadow-subtle"
+                  >
+                    <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-accent-subtle text-accent border border-accent/20 flex-shrink-0 group-hover:bg-accent group-hover:text-accent-foreground transition-colors">
+                      [{citation.citation_id}]
+                    </span>
+                    <div className="min-w-0 flex-1">
+                      <div className="text-xs font-medium text-foreground truncate group-hover:text-accent transition-colors">
+                        {citation.document_title}
+                      </div>
+                      <div className="text-[11px] text-muted-foreground truncate mt-0.5">
+                        {citation.page_number ? `Page ${citation.page_number}` : "Section"}
+                        {citation.section_title ? ` · ${citation.section_title}` : ""}
+                      </div>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}

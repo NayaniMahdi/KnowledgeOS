@@ -1,0 +1,135 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: #FAFAF8;
+    --foreground: #202124;
+    
+    --surface: #FFFFFF;
+    --surface-secondary: #F4F4F1;
+    --surface-hover: #F0F0EC;
+    --surface-active: #E8E8E3;
+    
+    --muted: #F0F0ED;
+    --muted-foreground: #686B70;
+    
+    --border: #E8E9E6;
+    --border-subtle: #F0F0EC;
+    
+    --accent: #365C49;
+    --accent-foreground: #FFFFFF;
+    --accent-subtle: #EAF0EB;
+    --accent-hover: #2C4B3C;
+    
+    --success: #2E6B47;
+    --warning: #B26A00;
+    --danger: #B43C3C;
+    --info: #355C7D;
+
+    --radius-sm: 6px;
+    --radius-md: 10px;
+    --radius-lg: 14px;
+    --radius-xl: 18px;
+  }
+
+  .dark {
+    --background: #171816;
+    --foreground: #F3F3EF;
+    
+    --surface: #20211F;
+    --surface-secondary: #282926;
+    --surface-hover: #2E302D;
+    --surface-active: #373935;
+    
+    --muted: #242522;
+    --muted-foreground: #A6A8A2;
+    
+    --border: #343632;
+    --border-subtle: #292B27;
+    
+    --accent: #9BB8A4;
+    --accent-foreground: #142018;
+    --accent-subtle: #29352C;
+    --accent-hover: #ABC6B4;
+    
+    --success: #68B684;
+    --warning: #DE9334;
+    --danger: #DF6565;
+    --info: #6DA2CA;
+  }
+
+  * {
+    border-color: var(--border);
+  }
+
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--muted-foreground);
+}
+
+/* Apple-style smooth glassmorphic card & header backdrop */
+.apple-blur {
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+/* Typography refinements */
+.prose-apple {
+  color: var(--foreground);
+}
+
+.prose-apple h1, 
+.prose-apple h2, 
+.prose-apple h3, 
+.prose-apple h4 {
+  color: var(--foreground);
+  font-weight: 600;
+  letter-spacing: -0.015em;
+}
+
+.prose-apple p {
+  line-height: 1.65;
+  margin-top: 0.6em;
+  margin-bottom: 0.6em;
+}
+
+.prose-apple code {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.875em;
+  background-color: var(--surface-secondary);
+  padding: 0.2em 0.4em;
+  border-radius: 4px;
+}
+
+.prose-apple pre {
+  background-color: var(--surface-secondary);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+}
