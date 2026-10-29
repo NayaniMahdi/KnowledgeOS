@@ -131,12 +131,12 @@ export function MessageItem({ message, onRegenerate, isStreaming }: MessageItemP
       <div className={cn("max-w-3xl w-full mx-auto", !isAssistant && "flex justify-end")}>
         {!isAssistant ? (
           /* User Bubble: Apple Messages Style */
-          <div className="max-w-[85%] rounded-2xl px-4 py-3 bg-surface border border-black/8 dark:border-white/10 text-foreground shadow-subtle text-[14.5px] leading-relaxed">
+          <div className="max-w-[85%] rounded-2xl px-4 py-3 bg-white/80 dark:bg-white/[0.12] backdrop-blur-xl border border-black/8 dark:border-white/15 text-foreground shadow-apple text-[14.5px] leading-relaxed">
             {message.content}
           </div>
         ) : (
-          /* Assistant Answer */
-          <div className="flex gap-4">
+          /* Assistant Answer: Frosted Apple Card */
+          <div className="flex gap-4 p-4 rounded-2xl bg-white/80 dark:bg-black/40 backdrop-blur-2xl border border-black/8 dark:border-white/10 shadow-sm">
             {/* Assistant Monogram */}
             <div className="w-7 h-7 rounded-lg flex-shrink-0 flex items-center justify-center text-xs mt-0.5 bg-foreground text-background shadow-apple select-none">
               <Sparkles className="w-3.5 h-3.5" />
@@ -150,7 +150,7 @@ export function MessageItem({ message, onRegenerate, isStreaming }: MessageItemP
                     KnowledgeOS
                   </span>
                   {message.model_identifier && (
-                    <span className="text-[10.5px] font-mono text-muted-foreground bg-black/4 dark:bg-white/8 px-2 py-0.5 rounded-full border border-black/6 dark:border-white/10">
+                    <span className="text-[10.5px] font-mono text-muted-foreground bg-white/50 dark:bg-white/10 backdrop-blur-md px-2 py-0.5 rounded-full border border-black/8 dark:border-white/12">
                       {message.model_identifier.replace(":free", "")}
                     </span>
                   )}
@@ -181,17 +181,30 @@ export function MessageItem({ message, onRegenerate, isStreaming }: MessageItemP
                 )}
               </div>
 
-              {/* Rendered Text */}
-              <div className="prose-apple">
-                {renderCustomMarkdown(message.content)}
-                {isStreaming && (
-                  <span className="inline-block w-1.5 h-4 ml-1 bg-foreground animate-pulse align-middle" />
-                )}
-              </div>
+              {/* Rendered Text or Thinking Animation */}
+              {isStreaming && !message.content ? (
+                <div className="flex items-center gap-3 py-1.5 px-0.5">
+                  <div className="flex items-center gap-1.5 py-1">
+                    <span className="w-2 h-2 rounded-full bg-foreground/80 animate-dot-1" />
+                    <span className="w-2 h-2 rounded-full bg-foreground/80 animate-dot-2" />
+                    <span className="w-2 h-2 rounded-full bg-foreground/80 animate-dot-3" />
+                  </div>
+                  <span className="text-[12.5px] font-medium tracking-tight text-muted-foreground/80 select-none">
+                    Thinking...
+                  </span>
+                </div>
+              ) : (
+                <div className="prose-apple">
+                  {renderCustomMarkdown(message.content)}
+                  {isStreaming && (
+                    <span className="inline-block w-1.5 h-4 ml-1 bg-foreground animate-pulse align-middle" />
+                  )}
+                </div>
+              )}
 
               {/* Source References Section */}
               {message.source_references && message.source_references.length > 0 && (
-                <div className="mt-4 pt-3.5 border-t border-black/6 dark:border-white/10">
+                <div className="mt-4 pt-3.5 border-t border-black/8 dark:border-white/10">
                   <div className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-2.5 flex items-center gap-1.5">
                     <FileText className="w-3.5 h-3.5 opacity-80" />
                     Verified Citations ({message.source_references.length})
@@ -201,7 +214,7 @@ export function MessageItem({ message, onRegenerate, isStreaming }: MessageItemP
                       <button
                         key={citation.citation_id}
                         onClick={() => openCitation(citation)}
-                        className="text-left p-3 rounded-xl bg-surface border border-black/6 dark:border-white/10 hover:border-foreground/30 hover:bg-surface-hover transition-all group flex items-start gap-2.5 shadow-subtle"
+                        className="text-left p-3 rounded-xl bg-white/60 dark:bg-white/[0.05] backdrop-blur-xl border border-black/8 dark:border-white/12 hover:border-foreground/40 hover:bg-white/80 dark:hover:bg-white/[0.09] transition-all group flex items-start gap-2.5 shadow-subtle"
                       >
                         <span className="text-[10px] font-mono font-medium px-1.5 py-0.5 rounded bg-black/6 dark:bg-white/12 text-foreground border border-black/10 dark:border-white/15 flex-shrink-0 group-hover:bg-foreground group-hover:text-background transition-colors">
                           [{citation.citation_id}]

@@ -6,17 +6,18 @@ import { Header } from "@/components/layout/header";
 import { useKnowledge } from "@/context/knowledge-context";
 import { DocumentChunk, SourceCitation } from "@/lib/types";
 import { Search, ArrowRight, ShieldCheck, Tag } from "lucide-react";
+import { MOCK_CHUNKS } from "@/lib/db/mock-data";
 
 export default function SearchPage() {
   const { currentUser, openCitation } = useKnowledge();
   const [query, setQuery] = useState("");
-  const [results, setResults] = useState<DocumentChunk[]>([]);
+  const [results, setResults] = useState<DocumentChunk[]>(MOCK_CHUNKS.slice(0, 4));
   const [loading, setLoading] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const handleSearch = async (searchTerm: string) => {
     if (!searchTerm.trim()) {
-      setResults([]);
+      setResults(MOCK_CHUNKS.slice(0, 4));
       return;
     }
 
@@ -49,7 +50,7 @@ export default function SearchPage() {
   }, [query, currentUser.role, currentUser.department]);
 
   return (
-    <div className="flex h-screen bg-background text-foreground overflow-hidden">
+    <div className="flex h-screen bg-transparent text-foreground overflow-hidden">
       <Sidebar
         isOpen={isMobileMenuOpen}
         onCloseMobile={() => setIsMobileMenuOpen(false)}
@@ -84,13 +85,13 @@ export default function SearchPage() {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Search approved SOPs, pricing packages, policies, and FAQs..."
-              className="w-full pl-10 pr-4 py-3 text-[14px] bg-surface border border-black/8 dark:border-white/12 rounded-2xl placeholder:text-muted-foreground focus:outline-none focus:border-foreground/30 shadow-apple transition-colors"
+              className="w-full pl-10 pr-4 py-3 text-[14px] bg-white/70 dark:bg-black/60 backdrop-blur-3xl border border-black/8 dark:border-white/12 rounded-2xl placeholder:text-muted-foreground focus:outline-none focus:border-foreground/30 shadow-apple transition-colors"
               autoFocus
             />
           </div>
 
           {/* Role access notice */}
-          <div className="flex items-center gap-2 p-3 rounded-2xl bg-black/4 dark:bg-white/6 border border-border text-xs text-muted-foreground">
+          <div className="flex items-center gap-2 p-3 rounded-2xl bg-white/50 dark:bg-white/[0.04] backdrop-blur-md border border-black/8 dark:border-white/10 text-xs text-muted-foreground">
             <ShieldCheck className="w-4 h-4 text-foreground opacity-80 flex-shrink-0" />
             <span className="text-[12px]">
               Search automatically filters out confidential documents outside your department and role permissions.
@@ -125,7 +126,7 @@ export default function SearchPage() {
                   <div
                     key={chunk.id}
                     onClick={() => openCitation(citation)}
-                    className="p-4 rounded-2xl bg-surface border border-black/6 dark:border-white/10 hover:border-foreground/30 hover:shadow-apple transition-all cursor-pointer shadow-subtle group"
+                    className="p-4 rounded-2xl bg-white/60 dark:bg-white/[0.04] backdrop-blur-xl border border-black/8 dark:border-white/12 hover:border-foreground/35 hover:bg-white/80 dark:hover:bg-white/[0.08] hover:shadow-apple-hover transition-all cursor-pointer shadow-apple group"
                   >
                     <div className="flex items-center justify-between gap-2 mb-2">
                       <div className="flex items-center gap-2">

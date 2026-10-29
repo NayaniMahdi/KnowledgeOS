@@ -52,10 +52,12 @@ export function ChatComposer({
   };
 
   const handleSubmit = () => {
-    if (!input.trim() || isStreaming) return;
-    onSendMessage(input.trim());
+    const currentVal = input.trim() || textareaRef.current?.value.trim() || "";
+    if (!currentVal || isStreaming) return;
+    onSendMessage(currentVal);
     setInput("");
     if (textareaRef.current) {
+      textareaRef.current.value = "";
       textareaRef.current.style.height = "auto";
     }
   };
@@ -68,7 +70,7 @@ export function ChatComposer({
       {isModelSelectorOpen && (
         <div
           ref={selectorRef}
-          className="absolute bottom-full mb-2 left-4 w-72 sm:w-80 bg-surface border border-border rounded-2xl shadow-popover p-2 z-30 animate-fade-in"
+          className="absolute bottom-full mb-2 left-4 w-72 sm:w-80 bg-white/85 dark:bg-black/85 backdrop-blur-3xl border border-black/10 dark:border-white/15 rounded-2xl shadow-2xl p-2 z-30 animate-fade-in"
         >
           <div className="text-[10.5px] font-semibold text-muted-foreground uppercase px-2 py-1 tracking-wider">
             Active Provider & Model
@@ -86,7 +88,7 @@ export function ChatComposer({
                   "w-full text-left p-2 rounded-xl text-xs flex items-center justify-between transition-colors",
                   selectedModel === model.id
                     ? "bg-black/8 dark:bg-white/12 text-foreground font-semibold"
-                    : "hover:bg-surface-hover text-foreground"
+                    : "hover:bg-black/4 dark:hover:bg-white/5 text-foreground"
                 )}
               >
                 <div className="min-w-0 pr-2">
@@ -110,7 +112,7 @@ export function ChatComposer({
       )}
 
       {/* Floating Apple-Style Composer Box */}
-      <div className="relative flex flex-col bg-surface border border-black/8 dark:border-white/12 rounded-2xl shadow-apple transition-shadow hover:shadow-apple-hover focus-within:border-foreground/30">
+      <div className="relative flex flex-col bg-white/80 dark:bg-black/70 backdrop-blur-3xl border border-black/10 dark:border-white/15 rounded-2xl shadow-2xl transition-all hover:shadow-apple-hover focus-within:border-foreground/35 focus-within:bg-white/90 dark:focus-within:bg-black/80">
         <textarea
           ref={textareaRef}
           value={input}
@@ -128,7 +130,7 @@ export function ChatComposer({
             {/* Model Pill Button */}
             <button
               onClick={() => setIsModelSelectorOpen(!isModelSelectorOpen)}
-              className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11.5px] font-medium bg-black/4 dark:bg-white/8 text-foreground hover:bg-surface-hover border border-black/6 dark:border-white/10 transition-colors select-none shadow-subtle"
+              className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11.5px] font-medium bg-white/60 dark:bg-white/10 text-foreground hover:bg-white/80 dark:hover:bg-white/15 border border-black/8 dark:border-white/12 transition-colors select-none shadow-subtle"
               title="Change active model"
             >
               <Sparkles className="w-3 h-3 opacity-70" />
@@ -164,6 +166,7 @@ export function ChatComposer({
               </button>
             ) : (
               <button
+                id="send-message-btn"
                 onClick={handleSubmit}
                 disabled={!input.trim()}
                 className={cn(

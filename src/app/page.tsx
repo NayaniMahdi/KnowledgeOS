@@ -117,7 +117,7 @@ export default function ChatPage() {
       const decoder = new TextDecoder();
       let accumulatedText = "";
       let finalCitations = headerCitations;
-      let finalModelUsed = selectedModel;
+      let finalModelUsed = res.headers.get("X-Model-Used") || selectedModel;
 
       if (reader) {
         while (true) {
@@ -139,6 +139,12 @@ export default function ChatPage() {
                 if (event.done) {
                   if (event.citations) finalCitations = event.citations;
                   if (event.modelUsed) finalModelUsed = event.modelUsed;
+                  if (event.conversationId && event.conversationId !== activeConversationId) {
+                    setActiveConversationId(event.conversationId);
+                  }
+                  if (event.title || event.conversationId) {
+                    fetchConversations();
+                  }
                 }
               } catch {
                 // partial SSE line
@@ -161,6 +167,7 @@ export default function ChatPage() {
 
       setMessages((prev) => [...prev, assistantMsg]);
       setStreamingContent("");
+      fetchConversations();
     } catch (err: any) {
       if (err.name !== "AbortError") {
         console.error("Chat error:", err);
@@ -205,7 +212,7 @@ export default function ChatPage() {
   };
 
   return (
-    <div className="flex h-screen bg-background text-foreground overflow-hidden">
+    <div className="flex h-screen bg-transparent text-foreground overflow-hidden">
       {/* Sidebar */}
       <Sidebar
         isOpen={isMobileMenuOpen}
@@ -233,8 +240,8 @@ export default function ChatPage() {
                 />
               ))}
 
-              {/* Streaming Assistant Response */}
-              {isStreaming && streamingContent && (
+              {/* Streaming Assistant Response (Shows 3 dancing dots while waiting, then streams text) */}
+              {isStreaming && (
                 <MessageItem
                   message={{
                     id: "streaming",

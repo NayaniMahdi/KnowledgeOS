@@ -17,6 +17,11 @@ interface KnowledgeContextType {
   switchUserRole: (role: UserRole) => void;
   setUserDepartment: (department: Department) => void;
 
+  // Sidebar State (Desktop Collapsible)
+  isSidebarCollapsed: boolean;
+  setIsSidebarCollapsed: (val: boolean) => void;
+  toggleSidebar: () => void;
+
   // Theme
   theme: "system" | "light" | "dark";
   setTheme: (theme: "system" | "light" | "dark") => void;
@@ -36,6 +41,7 @@ interface KnowledgeContextType {
   activeConversationId: string | null;
   setActiveConversationId: (id: string | null) => void;
   fetchConversations: () => Promise<void>;
+  startNewConversation: () => void;
   createNewConversation: () => Promise<string>;
   deleteConversation: (id: string) => Promise<void>;
   clearAllConversations: () => Promise<void>;
@@ -54,10 +60,11 @@ const KnowledgeContext = createContext<KnowledgeContextType | undefined>(undefin
 
 export function KnowledgeProvider({ children }: { children: React.ReactNode }) {
   const [currentUser, setCurrentUser] = useState<UserProfile>(MOCK_USERS[0]); // Sarah Chen (Admin)
-  const [theme, setThemeState] = useState<"system" | "light" | "dark">("system");
+  const [isSidebarCollapsed, setIsSidebarCollapsedState] = useState<boolean>(false);
+  const [theme, setThemeState] = useState<"system" | "light" | "dark">("dark");
   const [demoMode, setDemoModeState] = useState<boolean>(true);
-  const [selectedProvider, setSelectedProvider] = useState<AIProvider>("openrouter");
-  const [selectedModel, setSelectedModel] = useState<string>("google/gemini-2.0-flash-exp:free");
+  const [selectedProvider, setSelectedProviderState] = useState<AIProvider>("nvidia");
+  const [selectedModel, setSelectedModelState] = useState<string>("nvidia/nemotron-3.5-lightning-30b-a3b");
 
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [activeConversationId, setActiveConversationId] = useState<string | null>("conv-demo-01");
@@ -66,11 +73,37 @@ export function KnowledgeProvider({ children }: { children: React.ReactNode }) {
   const appName = process.env.NEXT_PUBLIC_APP_NAME || "KnowledgeOS";
   const orgName = process.env.NEXT_PUBLIC_ORGANIZATION_NAME || "Acme Corp";
 
-  // 1. Theme Management (System default + sync with prefers-color-scheme)
+  const setSelectedModel = (model: string) => {
+    setSelectedModelState(model);
+    try {
+      localStorage.setItem("kos_selected_model", model);
+    } catch {}
+  };
+
+  const setSelectedProvider = (provider: AIProvider) => {
+    setSelectedProviderState(provider);
+    try {
+      localStorage.setItem("kos_selected_provider", provider);
+    } catch {}
+  };
+
+  // 1. Theme Management & Settings Persistence
   useEffect(() => {
     const savedTheme = localStorage.getItem("kos_theme") as "system" | "light" | "dark" | null;
     if (savedTheme) {
       setThemeState(savedTheme);
+    } else {
+      setThemeState("dark");
+    }
+
+    const savedModel = localStorage.getItem("kos_selected_model");
+    if (savedModel) {
+      setSelectedModelState(savedModel);
+    }
+
+    const savedProvider = localStorage.getItem("kos_selected_provider") as AIProvider | null;
+    if (savedProvider) {
+      setSelectedProviderState(savedProvider);
     }
 
     const savedDemo = localStorage.getItem("kos_demo_mode");
@@ -78,11 +111,29 @@ export function KnowledgeProvider({ children }: { children: React.ReactNode }) {
       setDemoModeState(savedDemo === "true");
     }
 
+    const savedCollapse = localStorage.getItem("kos_sidebar_collapsed");
+    if (savedCollapse !== null) {
+      setIsSidebarCollapsedState(savedCollapse === "true");
+    }
+
     const savedRole = localStorage.getItem("kos_user_role") as UserRole | null;
     if (savedRole === "employee") {
       setCurrentUser(MOCK_USERS[1]); // Alex Rivera
     }
   }, []);
+
+  const setIsSidebarCollapsed = (val: boolean) => {
+    setIsSidebarCollapsedState(val);
+    localStorage.setItem("kos_sidebar_collapsed", String(val));
+  };
+
+  const toggleSidebar = () => {
+    setIsSidebarCollapsedState((prev) => {
+      const next = !prev;
+      localStorage.setItem("kos_sidebar_collapsed", String(next));
+      return next;
+    });
+  };
 
   useEffect(() => {
     const root = document.documentElement;
@@ -140,6 +191,10 @@ export function KnowledgeProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     fetchConversations();
   }, []);
+
+  const startNewConversation = () => {
+    setActiveConversationId(null);
+  };
 
   const createNewConversation = async (): Promise<string> => {
     try {
@@ -204,6 +259,9 @@ export function KnowledgeProvider({ children }: { children: React.ReactNode }) {
         currentUser,
         switchUserRole,
         setUserDepartment,
+        isSidebarCollapsed,
+        setIsSidebarCollapsed,
+        toggleSidebar,
         theme,
         setTheme,
         demoMode,
@@ -216,6 +274,7 @@ export function KnowledgeProvider({ children }: { children: React.ReactNode }) {
         activeConversationId,
         setActiveConversationId,
         fetchConversations,
+        startNewConversation,
         createNewConversation,
         deleteConversation,
         clearAllConversations,

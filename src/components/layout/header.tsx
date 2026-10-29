@@ -2,7 +2,7 @@
 
 import React from "react";
 import { useKnowledge } from "@/context/knowledge-context";
-import { Menu, Sparkles, Shield, ToggleLeft, ToggleRight } from "lucide-react";
+import { Shield, ToggleLeft, ToggleRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface HeaderProps {
@@ -11,19 +11,35 @@ interface HeaderProps {
 }
 
 export function Header({ onToggleMobileMenu, title = "Knowledge Assistant" }: HeaderProps) {
-  const { demoMode, setDemoMode, currentUser, switchUserRole, selectedModel, selectedProvider } =
-    useKnowledge();
+  const {
+    demoMode,
+    setDemoMode,
+    currentUser,
+    switchUserRole,
+    isSidebarCollapsed,
+    toggleSidebar,
+  } = useKnowledge();
 
   return (
-    <header className="h-14 border-b border-black/5 dark:border-white/10 bg-background/85 dark:bg-black/85 apple-blur sticky top-0 z-20 flex items-center justify-between px-4 sm:px-6">
-      {/* Left: Mobile Toggle & Page Title */}
-      <div className="flex items-center gap-3">
+    <header className="h-14 border-b border-black/8 dark:border-white/10 bg-white/70 dark:bg-black/60 apple-blur sticky top-0 z-20 flex items-center justify-between px-4 sm:px-6">
+      {/* Left: Single 3-Lines Toggle & Page Title */}
+      <div className="flex items-center gap-2.5">
         <button
-          onClick={onToggleMobileMenu}
-          className="md:hidden p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
-          aria-label="Open sidebar"
+          id="sidebar-toggle-btn"
+          onClick={() => {
+            onToggleMobileMenu();
+            toggleSidebar();
+          }}
+          className="p-2 rounded-xl text-muted-foreground hover:text-foreground hover:bg-black/5 dark:hover:bg-white/10 transition-all active:scale-95 cursor-pointer"
+          title={isSidebarCollapsed ? "Expand Sidebar (3-Lines Menu)" : "Collapse Sidebar (3-Lines Menu)"}
+          aria-label="Toggle sidebar"
         >
-          <Menu className="w-5 h-5" />
+          {/* Authentic 3-Lines Icon Design */}
+          <div className="w-4 h-4 flex flex-col justify-center gap-[3px]">
+            <span className="w-4 h-[1.8px] bg-current rounded-full transition-all" />
+            <span className="w-3.5 h-[1.8px] bg-current rounded-full transition-all" />
+            <span className="w-4 h-[1.8px] bg-current rounded-full transition-all" />
+          </div>
         </button>
 
         <h2 className="text-[14px] font-semibold text-foreground tracking-[-0.015em]">
@@ -31,17 +47,8 @@ export function Header({ onToggleMobileMenu, title = "Knowledge Assistant" }: He
         </h2>
       </div>
 
-      {/* Right: Status Badges & Controls */}
+      {/* Right: Status Badges & Controls (Role & Demo Mode) */}
       <div className="flex items-center gap-2 sm:gap-2.5">
-        {/* Active Model Indicator */}
-        <div className="hidden sm:flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface border border-black/5 dark:border-white/10 text-[11.5px] font-medium text-foreground shadow-subtle">
-          <Sparkles className="w-3 h-3 opacity-70" />
-          <span className="capitalize text-muted-foreground">{selectedProvider}:</span>
-          <span className="font-mono text-foreground">
-            {selectedModel.split("/").pop()?.replace(":free", "")}
-          </span>
-        </div>
-
         {/* Quick Role Switcher Pill */}
         <button
           onClick={() => switchUserRole(currentUser.role === "admin" ? "employee" : "admin")}
@@ -49,7 +56,7 @@ export function Header({ onToggleMobileMenu, title = "Knowledge Assistant" }: He
             "flex items-center gap-1.5 px-3 py-1 rounded-full text-[11.5px] font-medium border transition-all cursor-pointer select-none shadow-subtle",
             currentUser.role === "admin"
               ? "bg-foreground text-background border-foreground font-semibold"
-              : "bg-surface text-foreground border-border hover:bg-surface-hover"
+              : "bg-white/50 dark:bg-white/[0.06] backdrop-blur-md text-foreground border-black/8 dark:border-white/10 hover:bg-white/70 dark:hover:bg-white/[0.10]"
           )}
           title="Click to toggle between Admin and Employee role"
         >
@@ -63,7 +70,7 @@ export function Header({ onToggleMobileMenu, title = "Knowledge Assistant" }: He
           className={cn(
             "flex items-center gap-1.5 px-3 py-1 rounded-full text-[11.5px] font-medium border transition-all select-none shadow-subtle",
             demoMode
-              ? "bg-surface text-foreground border-border hover:bg-surface-hover"
+              ? "bg-white/50 dark:bg-white/[0.06] backdrop-blur-md text-foreground border-black/8 dark:border-white/10 hover:bg-white/70 dark:hover:bg-white/[0.10]"
               : "bg-foreground text-background border-foreground font-semibold"
           )}
           title="Toggle Demo Mode"

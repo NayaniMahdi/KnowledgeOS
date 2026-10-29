@@ -19,11 +19,11 @@ export function CitationInspector() {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 apple-blur animate-fade-in">
       <div 
-        className="w-full max-w-lg bg-surface border border-black/8 dark:border-white/12 rounded-2xl shadow-popover overflow-hidden flex flex-col max-h-[85vh] animate-fade-in"
+        className="w-full max-w-lg bg-white/80 dark:bg-[#121214]/85 backdrop-blur-3xl border border-black/10 dark:border-white/15 rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[85vh] animate-fade-in"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="flex items-center justify-between px-5 py-4 border-b border-border bg-black/2 dark:bg-white/2">
+        <div className="flex items-center justify-between px-5 py-4 border-b border-black/8 dark:border-white/10 bg-white/40 dark:bg-white/[0.02]">
           <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 rounded-xl bg-black/5 dark:bg-white/10 flex items-center justify-center text-foreground shadow-subtle">
               <FileText className="w-4 h-4" />
@@ -57,14 +57,14 @@ export function CitationInspector() {
         <div className="p-5 overflow-y-auto space-y-4 text-xs">
           {/* Metadata Grid */}
           <div className="grid grid-cols-2 gap-2 text-xs">
-            <div className="p-3 rounded-xl bg-surface-secondary/70 border border-border">
+            <div className="p-3 rounded-xl bg-white/50 dark:bg-white/[0.04] backdrop-blur-md border border-black/8 dark:border-white/10">
               <span className="text-muted-foreground text-[10.5px] block mb-0.5 font-medium">Category</span>
               <span className="font-semibold text-foreground flex items-center gap-1.5 text-xs">
                 <Tag className="w-3.5 h-3.5 opacity-70" />
                 {selectedCitation.category_name || "Company SOP"}
               </span>
             </div>
-            <div className="p-3 rounded-xl bg-surface-secondary/70 border border-border">
+            <div className="p-3 rounded-xl bg-white/50 dark:bg-white/[0.04] backdrop-blur-md border border-black/8 dark:border-white/10">
               <span className="text-muted-foreground text-[10.5px] block mb-0.5 font-medium">Location</span>
               <span className="font-semibold text-foreground text-xs">
                 {selectedCitation.page_number
@@ -80,7 +80,7 @@ export function CitationInspector() {
             <span className="text-[10.5px] font-semibold text-muted-foreground uppercase tracking-wider block mb-1.5">
               Verified Source Excerpt
             </span>
-            <div className="p-4 rounded-xl bg-surface-secondary/50 border border-border text-foreground font-serif leading-relaxed text-[14px]">
+            <div className="p-4 rounded-xl bg-white/50 dark:bg-white/[0.03] backdrop-blur-md border border-black/8 dark:border-white/10 text-foreground font-serif leading-relaxed text-[14px]">
               <span className="font-sans font-bold mr-1 opacity-60">“</span>
               {selectedCitation.excerpt}
               <span className="font-sans font-bold ml-1 opacity-60">”</span>
@@ -88,7 +88,7 @@ export function CitationInspector() {
           </div>
 
           {/* Access Verification Badge */}
-          <div className="flex items-center gap-2 p-2.5 rounded-xl bg-black/4 dark:bg-white/6 border border-border text-xs text-foreground">
+          <div className="flex items-center gap-2 p-2.5 rounded-xl bg-white/50 dark:bg-white/[0.04] backdrop-blur-md border border-black/8 dark:border-white/10 text-xs text-foreground">
             <ShieldCheck className="w-4 h-4 flex-shrink-0 opacity-80" />
             <span className="text-[11.5px]">
               Authorized document access verified for your role and department.
@@ -97,10 +97,10 @@ export function CitationInspector() {
         </div>
 
         {/* Footer Actions */}
-        <div className="px-5 py-3 border-t border-border bg-black/2 dark:bg-white/2 flex items-center justify-between">
+        <div className="px-5 py-3 border-t border-black/8 dark:border-white/10 bg-white/40 dark:bg-white/[0.02] flex items-center justify-between">
           <button
             onClick={handleCopy}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-xl text-foreground bg-surface border border-border hover:bg-surface-hover shadow-subtle transition-colors"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-xl text-foreground bg-white/60 dark:bg-white/10 border border-black/8 dark:border-white/12 hover:bg-white/80 dark:hover:bg-white/15 shadow-subtle transition-colors"
           >
             {copied ? (
               <>

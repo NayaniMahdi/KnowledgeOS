@@ -145,7 +145,7 @@ export default function SettingsPage() {
   ];
 
   return (
-    <div className="flex h-screen bg-background text-foreground overflow-hidden">
+    <div className="flex h-screen bg-transparent text-foreground overflow-hidden">
       <Sidebar
         isOpen={isMobileMenuOpen}
         onCloseMobile={() => setIsMobileMenuOpen(false)}
@@ -159,7 +159,7 @@ export default function SettingsPage() {
 
         <main className="flex-1 overflow-y-auto p-4 sm:p-8 max-w-5xl w-full mx-auto space-y-6">
           {/* Header */}
-          <div className="pb-2 border-b border-border">
+          <div className="pb-2 border-b border-black/8 dark:border-white/10">
             <h1 className="text-2xl font-semibold tracking-[-0.03em] text-foreground">
               Application Settings
             </h1>
@@ -169,7 +169,7 @@ export default function SettingsPage() {
           </div>
 
           {/* Apple-styled Segmented Navigation Tabs */}
-          <div className="flex items-center gap-1.5 overflow-x-auto border-b border-border pb-1">
+          <div className="flex items-center gap-1.5 overflow-x-auto border-b border-black/8 dark:border-white/10 pb-1">
             {tabs.map((tab) => {
               const Icon = tab.icon;
               const isActive = activeTab === tab.id;
@@ -194,7 +194,7 @@ export default function SettingsPage() {
           {/* Tab 1: General */}
           {activeTab === "general" && (
             <div className="space-y-6 animate-fade-in text-xs">
-              <div className="p-6 rounded-2xl bg-surface border border-border shadow-subtle space-y-4">
+              <div className="p-6 rounded-2xl bg-white/70 dark:bg-black/60 backdrop-blur-2xl border border-black/8 dark:border-white/10 shadow-apple space-y-4">
                 <h3 className="text-sm font-semibold text-foreground tracking-tight">Organization & Branding</h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
@@ -204,7 +204,7 @@ export default function SettingsPage() {
                     <input
                       type="text"
                       defaultValue={appName}
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-surface-secondary border border-border text-foreground focus:outline-none focus:border-foreground/30 text-xs"
+                      className="w-full px-3.5 py-2.5 rounded-xl bg-white/50 dark:bg-white/[0.05] border border-black/8 dark:border-white/12 text-foreground focus:outline-none focus:border-foreground/30 text-xs"
                     />
                   </div>
                   <div>
@@ -214,14 +214,14 @@ export default function SettingsPage() {
                     <input
                       type="text"
                       defaultValue={orgName}
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-surface-secondary border border-border text-foreground focus:outline-none focus:border-foreground/30 text-xs"
+                      className="w-full px-3.5 py-2.5 rounded-xl bg-white/50 dark:bg-white/[0.05] border border-black/8 dark:border-white/12 text-foreground focus:outline-none focus:border-foreground/30 text-xs"
                     />
                   </div>
                 </div>
               </div>
 
               {/* Appearance Mode */}
-              <div className="p-6 rounded-2xl bg-surface border border-border shadow-subtle space-y-4">
+              <div className="p-6 rounded-2xl bg-white/70 dark:bg-black/60 backdrop-blur-2xl border border-black/8 dark:border-white/10 shadow-apple space-y-4">
                 <h3 className="text-sm font-semibold text-foreground tracking-tight">Appearance Theme</h3>
                 <p className="text-muted-foreground text-xs">
                   Choose between Light, Pitch Black, or automatic System mode matching your macOS/iOS settings.
@@ -233,7 +233,7 @@ export default function SettingsPage() {
                       "p-3.5 rounded-2xl border flex flex-col items-center gap-2 transition-all shadow-subtle",
                       theme === "system"
                         ? "border-foreground bg-foreground text-background font-semibold"
-                        : "border-border bg-surface text-foreground hover:bg-surface-hover"
+                        : "border-black/10 dark:border-white/10 bg-white/50 dark:bg-white/5 text-foreground hover:bg-white/70 dark:hover:bg-white/10"
                     )}
                   >
                     <Laptop className="w-4 h-4" />
@@ -245,7 +245,7 @@ export default function SettingsPage() {
                       "p-3.5 rounded-2xl border flex flex-col items-center gap-2 transition-all shadow-subtle",
                       theme === "light"
                         ? "border-foreground bg-foreground text-background font-semibold"
-                        : "border-border bg-surface text-foreground hover:bg-surface-hover"
+                        : "border-black/10 dark:border-white/10 bg-white/50 dark:bg-white/5 text-foreground hover:bg-white/70 dark:hover:bg-white/10"
                     )}
                   >
                     <Sun className="w-4 h-4" />
@@ -257,7 +257,7 @@ export default function SettingsPage() {
                       "p-3.5 rounded-2xl border flex flex-col items-center gap-2 transition-all shadow-subtle",
                       theme === "dark"
                         ? "border-foreground bg-foreground text-background font-semibold"
-                        : "border-border bg-surface text-foreground hover:bg-surface-hover"
+                        : "border-black/10 dark:border-white/10 bg-white/50 dark:bg-white/5 text-foreground hover:bg-white/70 dark:hover:bg-white/10"
                     )}
                   >
                     <Moon className="w-4 h-4" />
@@ -267,7 +267,7 @@ export default function SettingsPage() {
               </div>
 
               {/* Demo Mode Toggle Card */}
-              <div className="p-6 rounded-2xl bg-surface border border-border shadow-subtle flex items-start justify-between gap-4">
+              <div className="p-6 rounded-2xl bg-white/70 dark:bg-black/60 backdrop-blur-2xl border border-black/8 dark:border-white/10 shadow-apple flex items-start justify-between gap-4">
                 <div>
                   <h3 className="text-sm font-semibold text-foreground flex items-center gap-2">
                     <span>Demo Mode</span>
@@ -285,7 +285,7 @@ export default function SettingsPage() {
                     "px-4 py-2 rounded-xl text-xs font-semibold transition-all flex-shrink-0 shadow-apple",
                     demoMode
                       ? "bg-foreground text-background hover:opacity-90"
-                      : "bg-surface text-foreground hover:bg-surface-hover border border-border"
+                      : "bg-white/60 dark:bg-white/10 text-foreground hover:bg-white/80 dark:hover:bg-white/15 border border-black/8 dark:border-white/12"
                   )}
                 >
                   {demoMode ? "Disable Demo" : "Enable Demo"}
@@ -327,7 +327,7 @@ export default function SettingsPage() {
               )}
 
               {/* Provider Selection */}
-              <div className="p-6 rounded-2xl bg-surface border border-border shadow-subtle space-y-4">
+              <div className="p-6 rounded-2xl bg-white/70 dark:bg-black/60 backdrop-blur-2xl border border-black/8 dark:border-white/10 shadow-apple space-y-4">
                 <div className="flex items-center justify-between">
                   <h3 className="text-sm font-semibold text-foreground tracking-tight">Active LLM Provider</h3>
                   <span className="text-muted-foreground text-[11px]">Official APIs</span>
@@ -340,8 +340,8 @@ export default function SettingsPage() {
                     className={cn(
                       "p-4 rounded-2xl border cursor-pointer transition-all shadow-subtle flex flex-col justify-between",
                       selectedProvider === "openrouter"
-                        ? "border-foreground bg-black/4 dark:bg-white/8 text-foreground"
-                        : "border-border bg-surface hover:bg-surface-hover"
+                        ? "border-foreground bg-white/80 dark:bg-white/12 text-foreground"
+                        : "border-black/8 dark:border-white/10 bg-white/50 dark:bg-white/[0.04] hover:bg-white/70 dark:hover:bg-white/[0.08]"
                     )}
                   >
                     <div>
@@ -357,7 +357,7 @@ export default function SettingsPage() {
                         Frontier models including Gemini 2.0 Flash, Llama 3.3 70B, and DeepSeek R1 (free tiers supported).
                       </p>
                     </div>
-                    <div className="mt-4 pt-3 border-t border-border flex items-center justify-between">
+                    <div className="mt-4 pt-3 border-t border-black/8 dark:border-white/10 flex items-center justify-between">
                       <span className="text-[11px] text-muted-foreground">openrouter.ai/api/v1</span>
                       <button
                         type="button"
@@ -366,7 +366,7 @@ export default function SettingsPage() {
                           handleTestConnection("openrouter");
                         }}
                         disabled={testingProvider === "openrouter"}
-                        className="px-3 py-1 rounded-xl bg-surface border border-border hover:bg-surface-secondary transition-colors font-medium flex items-center gap-1 shadow-subtle"
+                        className="px-3 py-1 rounded-xl bg-white/60 dark:bg-white/10 border border-black/8 dark:border-white/12 hover:bg-white/80 dark:hover:bg-white/15 transition-colors font-medium flex items-center gap-1 shadow-subtle"
                       >
                         {testingProvider === "openrouter" ? (
                           <Loader2 className="w-3 h-3 animate-spin" />
@@ -384,8 +384,8 @@ export default function SettingsPage() {
                     className={cn(
                       "p-4 rounded-2xl border cursor-pointer transition-all shadow-subtle flex flex-col justify-between",
                       selectedProvider === "nvidia"
-                        ? "border-foreground bg-black/4 dark:bg-white/8 text-foreground"
-                        : "border-border bg-surface hover:bg-surface-hover"
+                        ? "border-foreground bg-white/80 dark:bg-white/12 text-foreground"
+                        : "border-black/8 dark:border-white/10 bg-white/50 dark:bg-white/[0.04] hover:bg-white/70 dark:hover:bg-white/[0.08]"
                     )}
                   >
                     <div>
@@ -401,7 +401,7 @@ export default function SettingsPage() {
                         Enterprise inference hosted on NVIDIA HGX infrastructure with TensorRT-LLM acceleration.
                       </p>
                     </div>
-                    <div className="mt-4 pt-3 border-t border-border flex items-center justify-between">
+                    <div className="mt-4 pt-3 border-t border-black/8 dark:border-white/10 flex items-center justify-between">
                       <span className="text-[11px] text-muted-foreground">integrate.api.nvidia.com</span>
                       <button
                         type="button"
@@ -410,7 +410,7 @@ export default function SettingsPage() {
                           handleTestConnection("nvidia");
                         }}
                         disabled={testingProvider === "nvidia"}
-                        className="px-3 py-1 rounded-xl bg-surface border border-border hover:bg-surface-secondary transition-colors font-medium flex items-center gap-1 shadow-subtle"
+                        className="px-3 py-1 rounded-xl bg-white/60 dark:bg-white/10 border border-black/8 dark:border-white/12 hover:bg-white/80 dark:hover:bg-white/15 transition-colors font-medium flex items-center gap-1 shadow-subtle"
                       >
                         {testingProvider === "nvidia" ? (
                           <Loader2 className="w-3 h-3 animate-spin" />
@@ -425,7 +425,7 @@ export default function SettingsPage() {
               </div>
 
               {/* API Credentials */}
-              <div className="p-6 rounded-2xl bg-surface border border-border shadow-subtle space-y-4">
+              <div className="p-6 rounded-2xl bg-white/70 dark:bg-black/60 backdrop-blur-2xl border border-black/8 dark:border-white/10 shadow-apple space-y-4">
                 <h3 className="text-sm font-semibold text-foreground tracking-tight">API Credentials</h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
@@ -437,7 +437,7 @@ export default function SettingsPage() {
                       value={openrouterKey}
                       onChange={(e) => setOpenrouterKey(e.target.value)}
                       placeholder="sk-or-v1-••••••••••••••••"
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-surface-secondary border border-border text-foreground font-mono focus:outline-none focus:border-foreground/30 text-xs"
+                      className="w-full px-3.5 py-2.5 rounded-xl bg-white/50 dark:bg-white/[0.05] border border-black/8 dark:border-white/12 text-foreground font-mono focus:outline-none focus:border-foreground/30 text-xs"
                     />
                   </div>
 
@@ -450,14 +450,14 @@ export default function SettingsPage() {
                       value={nvidiaKey}
                       onChange={(e) => setNvidiaKey(e.target.value)}
                       placeholder="nvapi-••••••••••••••••"
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-surface-secondary border border-border text-foreground font-mono focus:outline-none focus:border-foreground/30 text-xs"
+                      className="w-full px-3.5 py-2.5 rounded-xl bg-white/50 dark:bg-white/[0.05] border border-black/8 dark:border-white/12 text-foreground font-mono focus:outline-none focus:border-foreground/30 text-xs"
                     />
                   </div>
                 </div>
               </div>
 
               {/* Model Catalog */}
-              <div className="p-6 rounded-2xl bg-surface border border-border shadow-subtle space-y-4">
+              <div className="p-6 rounded-2xl bg-white/70 dark:bg-black/60 backdrop-blur-2xl border border-black/8 dark:border-white/10 shadow-apple space-y-4">
                 <h3 className="text-sm font-semibold text-foreground tracking-tight">Model Catalog</h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
@@ -467,7 +467,7 @@ export default function SettingsPage() {
                     <select
                       value={selectedModel}
                       onChange={(e) => setSelectedModel(e.target.value)}
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-surface border border-border text-foreground focus:outline-none focus:border-foreground/30 text-xs"
+                      className="w-full px-3.5 py-2.5 rounded-xl bg-white/50 dark:bg-white/[0.05] border border-black/8 dark:border-white/12 text-foreground focus:outline-none focus:border-foreground/30 text-xs"
                     >
                       {SUPPORTED_MODELS.map((m) => (
                         <option key={m.id} value={m.id}>
@@ -483,7 +483,7 @@ export default function SettingsPage() {
                     </label>
                     <select
                       defaultValue="text-embedding-3-small"
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-surface border border-border text-foreground focus:outline-none focus:border-foreground/30 text-xs"
+                      className="w-full px-3.5 py-2.5 rounded-xl bg-white/50 dark:bg-white/[0.05] border border-black/8 dark:border-white/12 text-foreground focus:outline-none focus:border-foreground/30 text-xs"
                     >
                       <option value="text-embedding-3-small">text-embedding-3-small (1536 dims)</option>
                       <option value="nvidia/llama-3.2-nv-embedqa-1b-v2">NVIDIA NV-EmbedQA (1024 dims)</option>
@@ -498,7 +498,7 @@ export default function SettingsPage() {
           {/* Tab 3: Knowledge Base */}
           {activeTab === "knowledge" && (
             <div className="space-y-6 animate-fade-in text-xs">
-              <div className="p-6 rounded-2xl bg-surface border border-border shadow-subtle space-y-4">
+              <div className="p-6 rounded-2xl bg-white/70 dark:bg-black/60 backdrop-blur-2xl border border-black/8 dark:border-white/10 shadow-apple space-y-4">
                 <h3 className="text-sm font-semibold text-foreground tracking-tight">RAG & Chunking Parameters</h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
@@ -508,7 +508,7 @@ export default function SettingsPage() {
                     <input
                       type="number"
                       defaultValue={800}
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-surface border border-border text-foreground focus:outline-none focus:border-foreground/30 text-xs"
+                      className="w-full px-3.5 py-2.5 rounded-xl bg-white/50 dark:bg-white/[0.05] border border-black/8 dark:border-white/12 text-foreground focus:outline-none focus:border-foreground/30 text-xs"
                     />
                   </div>
                   <div>
@@ -518,7 +518,7 @@ export default function SettingsPage() {
                     <input
                       type="number"
                       defaultValue={150}
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-surface border border-border text-foreground focus:outline-none focus:border-foreground/30 text-xs"
+                      className="w-full px-3.5 py-2.5 rounded-xl bg-white/50 dark:bg-white/[0.05] border border-black/8 dark:border-white/12 text-foreground focus:outline-none focus:border-foreground/30 text-xs"
                     />
                   </div>
                 </div>
@@ -529,9 +529,9 @@ export default function SettingsPage() {
           {/* Tab 4: Users */}
           {activeTab === "users" && (
             <div className="space-y-6 animate-fade-in text-xs">
-              <div className="p-6 rounded-2xl bg-surface border border-border shadow-subtle space-y-4">
+              <div className="p-6 rounded-2xl bg-white/70 dark:bg-black/60 backdrop-blur-2xl border border-black/8 dark:border-white/10 shadow-apple space-y-4">
                 <h3 className="text-sm font-semibold text-foreground tracking-tight">Active Team Directory</h3>
-                <div className="divide-y divide-border/60">
+                <div className="divide-y divide-black/6 dark:divide-white/8">
                   {MOCK_USERS.map((usr) => (
                     <div key={usr.id} className="py-3 flex items-center justify-between gap-3">
                       <div className="flex items-center gap-3">
@@ -542,7 +542,7 @@ export default function SettingsPage() {
                           <div className="font-semibold text-foreground">
                             {usr.full_name}
                             {currentUser.id === usr.id && (
-                              <span className="ml-2 text-[10px] px-2 py-0.5 rounded-full bg-surface-secondary text-muted-foreground font-normal border border-border">
+                              <span className="ml-2 text-[10px] px-2 py-0.5 rounded-full bg-white/50 dark:bg-white/10 text-muted-foreground font-normal border border-black/8 dark:border-white/12">
                                 Active Session
                               </span>
                             )}
@@ -554,7 +554,7 @@ export default function SettingsPage() {
                       </div>
                       <button
                         onClick={() => switchUserRole(usr.role)}
-                        className="px-3.5 py-1.5 rounded-xl border border-border hover:bg-surface-secondary transition-colors text-xs font-medium"
+                        className="px-3.5 py-1.5 rounded-xl border border-black/8 dark:border-white/12 hover:bg-white/60 dark:hover:bg-white/10 transition-colors text-xs font-medium"
                       >
                         Switch Role ({usr.role})
                       </button>
@@ -564,7 +564,7 @@ export default function SettingsPage() {
               </div>
 
               {/* Invite Form */}
-              <div className="p-6 rounded-2xl bg-surface border border-border shadow-subtle space-y-3">
+              <div className="p-6 rounded-2xl bg-white/70 dark:bg-black/60 backdrop-blur-2xl border border-black/8 dark:border-white/10 shadow-apple space-y-3">
                 <h3 className="text-sm font-semibold text-foreground tracking-tight">Invite Employee</h3>
                 {inviteSuccess && (
                   <div className="p-3 rounded-xl bg-status-success/10 text-status-success border border-status-success/20">
@@ -578,7 +578,7 @@ export default function SettingsPage() {
                     value={inviteEmail}
                     onChange={(e) => setInviteEmail(e.target.value)}
                     placeholder="colleague@acme.corp"
-                    className="flex-1 px-3.5 py-2.5 rounded-xl bg-surface-secondary border border-border text-foreground focus:outline-none focus:border-foreground/30 text-xs"
+                    className="flex-1 px-3.5 py-2.5 rounded-xl bg-white/50 dark:bg-white/[0.05] border border-black/8 dark:border-white/12 text-foreground focus:outline-none focus:border-foreground/30 text-xs"
                   />
                   <button
                     type="submit"
@@ -595,25 +595,25 @@ export default function SettingsPage() {
           {activeTab === "usage" && (
             <div className="space-y-6 animate-fade-in text-xs">
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                <div className="p-4 rounded-2xl bg-surface border border-border shadow-subtle">
+                <div className="p-4 rounded-2xl bg-white/70 dark:bg-black/60 backdrop-blur-2xl border border-black/8 dark:border-white/10 shadow-apple">
                   <span className="text-muted-foreground block mb-1 text-xs">Indexed Documents</span>
                   <span className="text-xl font-bold text-foreground font-mono">
                     {stats?.documents_count ?? 0}
                   </span>
                 </div>
-                <div className="p-4 rounded-2xl bg-surface border border-border shadow-subtle">
+                <div className="p-4 rounded-2xl bg-white/70 dark:bg-black/60 backdrop-blur-2xl border border-black/8 dark:border-white/10 shadow-apple">
                   <span className="text-muted-foreground block mb-1 text-xs">Vector Chunks</span>
                   <span className="text-xl font-bold text-foreground font-mono">
                     {stats?.chunks_count ?? 0}
                   </span>
                 </div>
-                <div className="p-4 rounded-2xl bg-surface border border-border shadow-subtle">
+                <div className="p-4 rounded-2xl bg-white/70 dark:bg-black/60 backdrop-blur-2xl border border-black/8 dark:border-white/10 shadow-apple">
                   <span className="text-muted-foreground block mb-1 text-xs">Conversations</span>
                   <span className="text-xl font-bold text-foreground font-mono">
                     {stats?.conversations_count ?? 0}
                   </span>
                 </div>
-                <div className="p-4 rounded-2xl bg-surface border border-border shadow-subtle">
+                <div className="p-4 rounded-2xl bg-white/70 dark:bg-black/60 backdrop-blur-2xl border border-black/8 dark:border-white/10 shadow-apple">
                   <span className="text-muted-foreground block mb-1 text-xs">Audit Events</span>
                   <span className="text-xl font-bold text-foreground font-mono">
                     {stats?.audit_events_count ?? 0}
@@ -622,9 +622,9 @@ export default function SettingsPage() {
               </div>
 
               {/* Audit Log */}
-              <div className="p-6 rounded-2xl bg-surface border border-border shadow-subtle space-y-4">
+              <div className="p-6 rounded-2xl bg-white/70 dark:bg-black/60 backdrop-blur-2xl border border-black/8 dark:border-white/10 shadow-apple space-y-4">
                 <h3 className="text-sm font-semibold text-foreground tracking-tight">Security & Audit Events</h3>
-                <div className="divide-y divide-border/60">
+                <div className="divide-y divide-black/6 dark:divide-white/8">
                   {stats?.recent_audits.map((evt) => (
                     <div key={evt.id} className="py-2.5 flex items-start justify-between gap-4">
                       <div>

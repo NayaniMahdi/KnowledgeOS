@@ -103,11 +103,11 @@ export function DocumentUploadModal({ isOpen, onClose, onSuccess }: DocumentUplo
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 apple-blur animate-fade-in">
       <div 
-        className="w-full max-w-lg bg-surface border border-black/8 dark:border-white/12 rounded-2xl shadow-popover overflow-hidden flex flex-col max-h-[90vh] animate-fade-in text-[13px]"
+        className="w-full max-w-lg bg-white/80 dark:bg-[#121214]/85 backdrop-blur-3xl border border-black/10 dark:border-white/15 rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh] animate-fade-in text-[13px]"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-border bg-black/2 dark:bg-white/2">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-black/8 dark:border-white/10 bg-white/40 dark:bg-white/[0.02]">
           <div>
             <h3 className="text-[14.5px] font-semibold text-foreground tracking-tight">Upload Company Document</h3>
             <p className="text-[11.5px] text-muted-foreground mt-0.5">
@@ -151,8 +151,8 @@ export function DocumentUploadModal({ isOpen, onClose, onSuccess }: DocumentUplo
               isDragging
                 ? "border-foreground bg-black/5 dark:bg-white/10"
                 : file
-                ? "border-foreground/30 bg-surface-secondary"
-                : "border-border hover:border-foreground/30 hover:bg-surface-hover"
+                ? "border-foreground/40 bg-white/60 dark:bg-white/[0.06] backdrop-blur-md"
+                : "border-black/10 dark:border-white/15 hover:border-foreground/40 hover:bg-white/50 dark:hover:bg-white/[0.04]"
             }`}
           >
             <input
@@ -203,7 +203,7 @@ export function DocumentUploadModal({ isOpen, onClose, onSuccess }: DocumentUplo
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder="e.g. Employee Travel Policy 2025"
-                className="w-full px-3 py-2 rounded-xl bg-surface border border-border text-foreground focus:outline-none focus:border-foreground/40 text-xs"
+                className="w-full px-3 py-2 rounded-xl bg-white/50 dark:bg-white/[0.05] border border-black/8 dark:border-white/12 text-foreground focus:outline-none focus:border-foreground/40 text-xs"
               />
             </div>
             <div>
@@ -215,7 +215,7 @@ export function DocumentUploadModal({ isOpen, onClose, onSuccess }: DocumentUplo
                 value={version}
                 onChange={(e) => setVersion(e.target.value)}
                 placeholder="1.0"
-                className="w-full px-3 py-2 rounded-xl bg-surface border border-border text-foreground focus:outline-none focus:border-foreground/40 text-xs"
+                className="w-full px-3 py-2 rounded-xl bg-white/50 dark:bg-white/[0.05] border border-black/8 dark:border-white/12 text-foreground focus:outline-none focus:border-foreground/40 text-xs"
               />
             </div>
           </div>
@@ -230,7 +230,7 @@ export function DocumentUploadModal({ isOpen, onClose, onSuccess }: DocumentUplo
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Brief summary of document content..."
-              className="w-full px-3 py-2 rounded-xl bg-surface border border-border text-foreground focus:outline-none focus:border-foreground/40 resize-none text-xs"
+              className="w-full px-3 py-2 rounded-xl bg-white/50 dark:bg-white/[0.05] border border-black/8 dark:border-white/12 text-foreground focus:outline-none focus:border-foreground/40 resize-none text-xs"
             />
           </div>
 
@@ -243,7 +243,7 @@ export function DocumentUploadModal({ isOpen, onClose, onSuccess }: DocumentUplo
               <select
                 value={categoryId}
                 onChange={(e) => setCategoryId(e.target.value)}
-                className="w-full px-3 py-2 rounded-xl bg-surface border border-border text-foreground focus:outline-none focus:border-foreground/40 text-xs"
+                className="w-full px-3 py-2 rounded-xl bg-white/50 dark:bg-white/[0.05] border border-black/8 dark:border-white/12 text-foreground focus:outline-none focus:border-foreground/40 text-xs"
               >
                 <option value="cat-sop">Standard Operating Procedures</option>
                 <option value="cat-pricing">Services and Pricing</option>
@@ -260,7 +260,7 @@ export function DocumentUploadModal({ isOpen, onClose, onSuccess }: DocumentUplo
               <select
                 value={department}
                 onChange={(e) => setDepartment(e.target.value as Department)}
-                className="w-full px-3 py-2 rounded-xl bg-surface border border-border text-foreground focus:outline-none focus:border-foreground/40 text-xs"
+                className="w-full px-3 py-2 rounded-xl bg-white/50 dark:bg-white/[0.05] border border-black/8 dark:border-white/12 text-foreground focus:outline-none focus:border-foreground/40 text-xs"
               >
                 <option value="Engineering">Engineering</option>
                 <option value="Sales">Sales</option>
@@ -282,7 +282,7 @@ export function DocumentUploadModal({ isOpen, onClose, onSuccess }: DocumentUplo
             <select
               value={accessScope}
               onChange={(e) => setAccessScope(e.target.value as AccessScope)}
-              className="w-full px-3 py-2 rounded-xl bg-surface border border-border text-foreground focus:outline-none focus:border-foreground/40 text-xs"
+              className="w-full px-3 py-2 rounded-xl bg-white/50 dark:bg-white/[0.05] border border-black/8 dark:border-white/12 text-foreground focus:outline-none focus:border-foreground/40 text-xs"
             >
               <option value="all">All Authorized Employees</option>
               <option value="department">Specific Department Only</option>
@@ -307,12 +307,12 @@ export function DocumentUploadModal({ isOpen, onClose, onSuccess }: DocumentUplo
           )}
 
           {/* Footer Actions */}
-          <div className="pt-3 border-t border-border flex items-center justify-end gap-2.5">
+          <div className="pt-3 border-t border-black/8 dark:border-white/10 flex items-center justify-end gap-2.5">
             <button
               type="button"
               onClick={onClose}
               disabled={isUploading}
-              className="px-4 py-2 rounded-xl border border-border text-foreground hover:bg-surface-hover transition-colors font-medium text-xs"
+              className="px-4 py-2 rounded-xl border border-black/10 dark:border-white/15 text-foreground bg-white/40 dark:bg-white/5 hover:bg-white/70 dark:hover:bg-white/10 transition-colors font-medium text-xs"
             >
               Cancel
             </button>

@@ -11,8 +11,8 @@ export async function POST(req: NextRequest) {
     const {
       conversationId: reqConvId,
       message,
-      provider = "openrouter",
-      model = "google/gemini-2.0-flash-exp:free",
+      provider = "nvidia",
+      model = "nvidia/nemotron-3.5-lightning-30b-a3b",
       userRole = "admin",
       userDepartment = "Executive",
     } = body;
@@ -23,15 +23,23 @@ export async function POST(req: NextRequest) {
 
     // 1. Ensure conversation exists
     let conversationId = reqConvId;
+    const existingConv = conversationId ? KnowledgeStore.getConversationById(conversationId) : null;
+    const isInitialTurn = !existingConv || !existingConv.title || existingConv.title === "New Conversation";
+
     if (!conversationId) {
       const newConv = KnowledgeStore.createConversation({
-        title: message.trim().slice(0, 36),
+        title: "New Conversation",
         model_used: model,
         provider_used: provider as AIProvider,
         is_demo: true,
       });
       conversationId = newConv.id;
     }
+
+    // Start title generation in background if it's the initial turn
+    const titlePromise = isInitialTurn
+      ? LLMProviderService.generateChatTitle(message.trim())
+      : Promise.resolve(existingConv?.title || "Conversation");
 
     // 2. Add user message to conversation history
     KnowledgeStore.addMessage(conversationId, {
@@ -51,7 +59,7 @@ export async function POST(req: NextRequest) {
       userRole as UserRole,
       userDepartment as Department,
       5,
-      0.35 // threshold
+      0.25 // threshold
     );
 
     // 5. Stream Completion from configured Provider (NVIDIA or OpenRouter, or grounded fallback)
@@ -87,7 +95,7 @@ export async function POST(req: NextRequest) {
         const eventData = `data: ${JSON.stringify({ text: decoder.decode(chunk) })}\n\n`;
         controller.enqueue(encoder.encode(eventData));
       },
-      flush(controller) {
+      async flush(controller) {
         const latency = Date.now() - startTime;
         // Save the complete assistant message to KnowledgeStore
         KnowledgeStore.addMessage(conversationId, {
@@ -99,13 +107,32 @@ export async function POST(req: NextRequest) {
           tokens_used: Math.round(fullResponseText.split(/\s+/).length * 1.3),
         });
 
-        // Send final citations and done event
+        // Resolve AI-generated title for the conversation
+        let finalTitle = existingConv?.title;
+        if (isInitialTurn) {
+          try {
+            const resolved = await Promise.race([
+              titlePromise,
+              new Promise<string>((r) => setTimeout(() => r(""), 2000)),
+            ]);
+            if (resolved && resolved.trim()) {
+              finalTitle = resolved.trim();
+              KnowledgeStore.updateConversation(conversationId, { title: finalTitle });
+            }
+          } catch (e) {
+            console.error("Failed to generate title:", e);
+          }
+        }
+
+        // Send final citations and done event with auto-generated title
         const endEvent = `data: ${JSON.stringify({
           done: true,
           citations: sourceReferences,
           modelUsed,
           latency_ms: latency,
           isFallback,
+          title: finalTitle,
+          conversationId,
         })}\n\n`;
         controller.enqueue(encoder.encode(endEvent));
       },

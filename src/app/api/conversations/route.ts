@@ -20,8 +20,8 @@ export async function POST(req: NextRequest) {
     const body = await req.json().catch(() => ({}));
     const conv = KnowledgeStore.createConversation({
       title: body.title || "New Conversation",
-      model_used: body.model || "google/gemini-2.0-flash-exp:free",
-      provider_used: (body.provider as AIProvider) || "openrouter",
+      model_used: body.model || "nvidia/nemotron-3.5-lightning-30b-a3b",
+      provider_used: (body.provider as AIProvider) || "nvidia",
       is_demo: body.is_demo ?? true,
     });
     return NextResponse.json({ conversation: conv });

@@ -56,7 +56,7 @@ export function WelcomeScreen({ onSelectPrompt }: WelcomeScreenProps) {
       </p>
 
       {/* Trust & Grounding Pill */}
-      <div className="inline-flex items-center gap-2 mt-4 px-3.5 py-1.2 rounded-full bg-black/4 dark:bg-white/8 text-foreground text-xs font-medium border border-black/8 dark:border-white/12 shadow-subtle">
+      <div className="inline-flex items-center gap-2 mt-4 px-3.5 py-1.5 rounded-full bg-white/50 dark:bg-white/[0.06] backdrop-blur-md text-foreground text-xs font-medium border border-black/8 dark:border-white/12 shadow-apple">
         <ShieldCheck className="w-3.5 h-3.5 opacity-80" />
         <span>Grounded with exact source citations • Zero hallucinations</span>
       </div>
@@ -68,17 +68,19 @@ export function WelcomeScreen({ onSelectPrompt }: WelcomeScreenProps) {
           return (
             <button
               key={idx}
+              type="button"
+              id={`prompt-card-${idx}`}
               onClick={() => onSelectPrompt(item.question)}
-              className="p-4 rounded-2xl bg-surface border border-black/6 dark:border-white/10 hover:border-foreground/30 hover:shadow-apple transition-all text-left group shadow-subtle flex flex-col justify-between"
+              className="p-4 rounded-2xl bg-white/70 dark:bg-black/60 backdrop-blur-2xl border border-black/8 dark:border-white/12 hover:border-foreground/40 hover:bg-white/85 dark:hover:bg-white/[0.08] hover:shadow-apple-hover transition-all text-left group shadow-apple flex flex-col justify-between cursor-pointer"
             >
               <div>
                 <div className="flex items-center justify-between mb-2">
-                  <div className="w-7 h-7 rounded-lg bg-black/4 dark:bg-white/8 text-foreground flex items-center justify-center">
+                  <div className="w-7 h-7 rounded-lg bg-black/5 dark:bg-white/10 text-foreground flex items-center justify-center shadow-subtle">
                     <Icon className="w-4 h-4 opacity-80" />
                   </div>
                   <ArrowRight className="w-3.5 h-3.5 text-muted-foreground group-hover:text-foreground group-hover:translate-x-0.5 transition-all" />
                 </div>
-                <h4 className="text-[13.5px] font-semibold text-foreground group-hover:opacity-90 transition-opacity tracking-[-0.01em]">
+                <h4 className="text-[13.5px] font-semibold text-foreground group-hover:opacity-95 transition-opacity tracking-[-0.01em]">
                   {item.title}
                 </h4>
                 <p className="text-[12px] text-muted-foreground mt-1 line-clamp-2 leading-relaxed">

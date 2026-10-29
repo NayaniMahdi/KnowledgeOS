@@ -20,16 +20,17 @@ import {
   X,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { MOCK_DOCUMENTS, MOCK_CATEGORIES } from "@/lib/db/mock-data";
 
 export default function DocumentsPage() {
   const { currentUser } = useKnowledge();
-  const [documents, setDocuments] = useState<DocumentItem[]>([]);
-  const [categories, setCategories] = useState<DocumentCategory[]>([]);
+  const [documents, setDocuments] = useState<DocumentItem[]>(MOCK_DOCUMENTS);
+  const [categories, setCategories] = useState<DocumentCategory[]>(MOCK_CATEGORIES);
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   // Chunk inspection drawer state
   const [inspectingDoc, setInspectingDoc] = useState<DocumentItem | null>(null);
@@ -113,7 +114,7 @@ export default function DocumentsPage() {
   };
 
   return (
-    <div className="flex h-screen bg-background text-foreground overflow-hidden">
+    <div className="flex h-screen bg-transparent text-foreground overflow-hidden">
       <Sidebar
         isOpen={isMobileMenuOpen}
         onCloseMobile={() => setIsMobileMenuOpen(false)}
@@ -127,7 +128,7 @@ export default function DocumentsPage() {
 
         <main className="flex-1 overflow-y-auto p-4 sm:p-8 max-w-6xl w-full mx-auto space-y-6">
           {/* Header Banner */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-border">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-black/8 dark:border-white/10">
             <div>
               <h1 className="text-2xl font-semibold tracking-[-0.03em] text-foreground">
                 Company Knowledge Base
@@ -146,7 +147,7 @@ export default function DocumentsPage() {
                 <span>Upload Document</span>
               </button>
             ) : (
-              <div className="text-xs text-muted-foreground px-3 py-1.5 rounded-xl bg-surface border border-border">
+              <div className="text-xs text-muted-foreground px-3 py-1.5 rounded-xl bg-white/50 dark:bg-white/5 backdrop-blur-md border border-black/8 dark:border-white/10">
                 Employee View (Read-Only)
               </div>
             )}
@@ -162,7 +163,7 @@ export default function DocumentsPage() {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search documents by title or description..."
-                className="w-full pl-9 pr-4 py-2 text-xs bg-surface border border-border rounded-xl placeholder:text-muted-foreground focus:outline-none focus:border-foreground/30 shadow-subtle transition-colors"
+                className="w-full pl-9 pr-4 py-2 text-xs bg-white/60 dark:bg-white/[0.05] border border-black/8 dark:border-white/12 rounded-xl placeholder:text-muted-foreground focus:outline-none focus:border-foreground/30 shadow-subtle transition-colors backdrop-blur-md"
               />
             </div>
 
@@ -197,7 +198,7 @@ export default function DocumentsPage() {
           </div>
 
           {/* Documents Table in macOS Style */}
-          <div className="bg-surface border border-border rounded-2xl shadow-subtle overflow-hidden">
+          <div className="bg-white/70 dark:bg-black/60 backdrop-blur-2xl border border-black/8 dark:border-white/10 rounded-2xl shadow-apple overflow-hidden">
             {loading ? (
               <div className="py-16 text-center text-xs text-muted-foreground">
                 Loading approved documents...
@@ -212,7 +213,7 @@ export default function DocumentsPage() {
               <div className="overflow-x-auto">
                 <table className="w-full text-left border-collapse text-xs">
                   <thead>
-                    <tr className="border-b border-border bg-black/2 dark:bg-white/2 text-muted-foreground font-semibold text-[11px] uppercase tracking-wider">
+                    <tr className="border-b border-black/8 dark:border-white/10 bg-white/40 dark:bg-white/[0.03] text-muted-foreground font-semibold text-[11px] uppercase tracking-wider">
                       <th className="py-3 px-4">Document</th>
                       <th className="py-3 px-3">Category</th>
                       <th className="py-3 px-3">Department</th>
@@ -222,7 +223,7 @@ export default function DocumentsPage() {
                       <th className="py-3 px-4 text-right">Actions</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-border/60">
+                  <tbody className="divide-y divide-black/6 dark:divide-white/8">
                     {documents.map((doc) => (
                       <tr
                         key={doc.id}
@@ -335,9 +336,9 @@ export default function DocumentsPage() {
       {/* Chunk Inspector Sheet */}
       {inspectingDoc && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 apple-blur animate-fade-in">
-          <div className="w-full max-w-2xl bg-surface border border-border rounded-2xl shadow-popover overflow-hidden flex flex-col max-h-[85vh] animate-fade-in">
+          <div className="w-full max-w-2xl bg-white/80 dark:bg-[#121214]/85 backdrop-blur-3xl border border-black/10 dark:border-white/15 rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[85vh] animate-fade-in">
             {/* Header */}
-            <div className="flex items-center justify-between px-6 py-4 border-b border-border bg-black/2 dark:bg-white/2">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-black/8 dark:border-white/10 bg-white/40 dark:bg-white/[0.02]">
               <div className="flex items-center gap-3">
                 <div className="w-8 h-8 rounded-xl bg-black/5 dark:bg-white/10 text-foreground flex items-center justify-center shadow-subtle">
                   <Layers className="w-4 h-4" />
@@ -373,7 +374,7 @@ export default function DocumentsPage() {
                 docChunks.map((chunk, index) => (
                   <div
                     key={chunk.id}
-                    className="p-4 rounded-xl bg-surface-secondary/70 border border-border space-y-1.5 shadow-subtle"
+                    className="p-4 rounded-xl bg-white/50 dark:bg-white/[0.04] backdrop-blur-md border border-black/8 dark:border-white/10 space-y-1.5 shadow-subtle"
                   >
                     <div className="flex items-center justify-between text-[11px] text-muted-foreground">
                       <span className="font-semibold text-foreground">
@@ -393,7 +394,7 @@ export default function DocumentsPage() {
             </div>
 
             {/* Footer */}
-            <div className="px-6 py-3.5 border-t border-border bg-black/2 dark:bg-white/2 flex justify-end">
+            <div className="px-6 py-3.5 border-t border-black/8 dark:border-white/10 bg-white/40 dark:bg-white/[0.02] flex justify-end">
               <button
                 onClick={() => setInspectingDoc(null)}
                 className="px-4 py-1.5 rounded-xl bg-foreground text-background text-xs font-semibold hover:opacity-90 transition-opacity shadow-apple"

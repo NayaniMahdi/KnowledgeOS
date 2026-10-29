@@ -8,6 +8,7 @@ export type Department =
   | 'Legal' 
   | 'Operations' 
   | 'Finance' 
+  | 'IT'
   | 'General';
 
 export interface UserProfile {

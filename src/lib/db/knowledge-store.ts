@@ -40,8 +40,8 @@ if (!globalForStore.knowledgeStore) {
         organization_id: "org-acme-01",
         user_id: "usr-admin-01",
         title: "Client Onboarding & Pricing Rules",
-        model_used: "google/gemini-2.0-flash-exp:free",
-        provider_used: "openrouter",
+        model_used: "nvidia/nemotron-3.5-lightning-30b-a3b",
+        provider_used: "nvidia",
         is_demo: true,
         created_at: "2025-01-20T10:00:00Z",
         updated_at: "2025-01-20T10:05:00Z",
@@ -61,7 +61,7 @@ if (!globalForStore.knowledgeStore) {
           conversation_id: "conv-demo-01",
           role: "assistant",
           content: "According to our standard operating procedures, the onboarding process consists of **three sequential stages** [1]:\n\n1. **Stage 1: Pre-boarding & Credential Provisioning** (Days -5 to Day 1) — IT provisions encrypted hardware, 1Password, Okta SSO, and team workspace access [2].\n2. **Stage 2: Core Department Orientation & Shadowing** (Days 2 to 14) — Takes exactly **13 business days**. During this period, the new hire is paired with an Onboarding Buddy, shadows at least three customer ceremonies, and completes the Acme Architecture Walkthrough [3].\n3. **Stage 3: Independent Project Execution** (Days 15 to 30) — Focuses on starter deliverables and concludes with the formal 30-day review [4].",
-          model_identifier: "google/gemini-2.0-flash-exp:free",
+          model_identifier: "nvidia/nemotron-3.5-lightning-30b-a3b",
           tokens_used: 184,
           latency_ms: 620,
           created_at: "2025-01-20T10:00:03Z",
@@ -137,6 +137,18 @@ if (!globalForStore.knowledgeStore) {
 }
 
 const store = globalForStore.knowledgeStore!;
+
+// Automatically synchronize latest seed mock documents and chunks into runtime store
+for (const doc of MOCK_DOCUMENTS) {
+  if (!store.documents.some((d) => d.id === doc.id)) {
+    store.documents.push(doc);
+  }
+}
+for (const chunk of MOCK_CHUNKS) {
+  if (!store.chunks.some((c) => c.id === chunk.id)) {
+    store.chunks.push(chunk);
+  }
+}
 
 export class KnowledgeStore {
   // --- Category Methods ---
@@ -236,24 +248,41 @@ export class KnowledgeStore {
     return store.chunks.filter((c) => c.document_id === documentId);
   }
 
-  // --- Intelligent RAG Retrieval with Role-Based Access Control ---
+  // --- Intelligent RAG Retrieval with Stemming, Synonyms & Access Control ---
   static searchChunks(
     query: string,
     userRole: UserRole = "admin",
     userDepartment: Department = "General",
     topK: number = 5,
-    minSimilarity: number = 0.4
+    minSimilarity: number = 0.25
   ): DocumentChunk[] {
+    const stemWord = (word: string): string => {
+      let s = word.toLowerCase().replace(/[^a-z0-9]/g, "");
+      if (s.length <= 3) return s;
+      if (s.endsWith("ies")) return s.slice(0, -3) + "y";
+      if (s.endsWith("ing")) return s.slice(0, -3);
+      if (s.endsWith("ment")) return s.slice(0, -4);
+      if (s.endsWith("tion")) return s.slice(0, -4);
+      if (s.endsWith("able") || s.endsWith("ible")) return s.slice(0, -4);
+      if (s.endsWith("ed")) return s.slice(0, -2);
+      if (s.endsWith("es")) return s.slice(0, -2);
+      if (s.endsWith("ly")) return s.slice(0, -2);
+      if (s.endsWith("s") && !s.endsWith("ss")) return s.slice(0, -1);
+      return s;
+    };
+
     const STOP_WORDS = new Set([
       "what", "is", "are", "our", "the", "and", "for", "with", "about", "from",
-      "how", "does", "take", "this", "that", "there", "have", "been", "will", "when"
+      "how", "does", "take", "this", "that", "there", "have", "been", "will", "when",
+      "can", "you", "tell", "me", "give", "any", "much", "many", "where", "which"
     ]);
-    const queryTokens = query
-      .toLowerCase()
+
+    const queryLower = query.toLowerCase();
+    const queryTokens = queryLower
       .split(/\s+/)
       .map((t) => t.replace(/[^a-z0-9]/g, ""))
       .filter((t) => t.length > 2 && !STOP_WORDS.has(t));
-    const queryLower = query.toLowerCase();
+    const queryStems = queryTokens.map(stemWord);
 
     // 1. Gather all authorized documents
     const allowedDocsMap = new Map<string, DocumentItem>();
@@ -277,6 +306,43 @@ export class KnowledgeStore {
     // 2. Score chunks belonging ONLY to allowed documents
     const scoredChunks: Array<{ chunk: DocumentChunk; score: number }> = [];
 
+    // Semantic proximity boost dictionary for corporate terminology
+    const keySynonyms: Record<string, string[]> = {
+      privacy: ["gdpr", "ccpa", "dsar", "retention", "personal", "pii", "protection", "rights", "encryption", "dpo"],
+      data: ["gdpr", "ccpa", "retention", "encryption", "privacy", "protection", "storage", "security"],
+      gdpr: ["privacy", "ccpa", "dsar", "rights", "retention", "data"],
+      security: ["okta", "mfa", "password", "vault", "1password", "jamf", "intune", "device", "breach", "encryption"],
+      password: ["1password", "vault", "mfa", "okta", "character", "credential", "security"],
+      onboard: ["stage", "hire", "orientation", "buddy", "credential", "day", "probation"],
+      onboarding: ["stage", "hire", "orientation", "buddy", "credential", "day", "probation"],
+      price: ["package", "month", "retainer", "rate", "hourly", "overage", "tier", "annual", "pricing"],
+      pricing: ["package", "month", "retainer", "rate", "hourly", "overage", "tier", "annual", "price"],
+      package: ["starter", "growth", "enterprise", "retainer", "rate", "tier", "sla", "pricing"],
+      tier: ["starter", "growth", "enterprise", "package", "sla", "pricing"],
+      refund: ["cancellation", "deposit", "sow", "terminate", "credit", "notice", "breach"],
+      cancel: ["cancellation", "refund", "notice", "days", "retainer", "sow"],
+      cancellation: ["refund", "deposit", "notice", "days", "retainer", "sow"],
+      expense: ["stipend", "allowance", "reimbursement", "travel", "meal", "per diem", "expensify", "reimburse"],
+      expenses: ["stipend", "allowance", "reimbursement", "travel", "meal", "per diem", "expensify", "reimburse"],
+      reimburse: ["stipend", "allowance", "expense", "travel", "meal", "expensify", "receipt", "reimbursement"],
+      reimbursement: ["stipend", "allowance", "expense", "travel", "meal", "expensify", "receipt", "reimburse"],
+      stipend: ["remote", "home", "office", "expense", "allowance", "internet", "allowances"],
+      remote: ["stipend", "home", "office", "allowance", "internet", "expenses", "remotely"],
+      remotely: ["stipend", "home", "office", "allowance", "internet", "remote"],
+      benefit: ["pto", "vacation", "sick", "insurance", "leave", "holiday", "401k", "parental", "benefits"],
+      benefits: ["pto", "vacation", "sick", "insurance", "leave", "holiday", "401k", "parental", "benefit"],
+      pto: ["vacation", "leave", "holiday", "sick", "rollover", "time off", "accrued"],
+      vacation: ["pto", "leave", "holiday", "rollover", "time off", "sick"],
+      leave: ["pto", "sick", "parental", "vacation", "holiday", "wellness"],
+      insurance: ["medical", "dental", "vision", "bcbs", "health", "coverage", "premium"],
+      health: ["medical", "dental", "vision", "bcbs", "insurance", "coverage"],
+      incident: ["p1", "p2", "severity", "postmortem", "outage", "escalation", "pager"],
+      outage: ["p1", "p2", "severity", "postmortem", "incident", "escalation"],
+      policy: ["policies", "guideline", "rule", "protocol", "standard", "procedure", "sop", "compliance"],
+      policies: ["policy", "guideline", "rule", "protocol", "standard", "procedure", "sop", "compliance"],
+      compensation: ["equity", "severance", "board", "director", "executive"],
+    };
+
     for (const chunk of store.chunks) {
       const parentDoc = allowedDocsMap.get(chunk.document_id);
       if (!parentDoc) continue; // Skip unauthorized chunks
@@ -284,60 +350,76 @@ export class KnowledgeStore {
       const contentLower = chunk.content.toLowerCase();
       const titleLower = chunk.document_title.toLowerCase();
       const sectionLower = (chunk.section_title || "").toLowerCase();
+      const allTextLower = `${titleLower} ${sectionLower} ${contentLower}`;
+
+      // Build words and stem set for the chunk
+      const chunkWords = allTextLower.split(/\s+/).map((w) => w.replace(/[^a-z0-9]/g, "")).filter((w) => w.length > 2);
+      const chunkStems = new Set(chunkWords.map(stemWord));
 
       let score = 0;
 
       // Exact phrase match bonus
-      if (queryLower.length > 5 && contentLower.includes(queryLower)) {
+      if (queryLower.length > 5 && (contentLower.includes(queryLower) || titleLower.includes(queryLower))) {
         score += 0.55;
       }
 
-      // Keyword token scoring
-      let tokenMatches = 0;
-      for (const token of queryTokens) {
+      // Token and Stem matching
+      let matchedTokensCount = 0;
+      for (let i = 0; i < queryTokens.length; i++) {
+        const token = queryTokens[i];
+        const stem = queryStems[i];
+
+        let tokenHit = false;
+
+        // Exact token in content, section, or title
         if (contentLower.includes(token)) {
-          tokenMatches++;
-          score += 0.2;
+          score += 0.22;
+          tokenHit = true;
         }
         if (sectionLower.includes(token)) {
-          score += 0.2;
+          score += 0.25;
+          tokenHit = true;
         }
         if (titleLower.includes(token)) {
-          score += 0.2;
+          score += 0.25;
+          tokenHit = true;
+        }
+
+        // Stem matching (bridges policies/policy, reimbursed/reimbursement, expenses/expense)
+        if (!tokenHit) {
+          if (chunkStems.has(stem) || [...chunkStems].some((cs) => cs.startsWith(stem) || stem.startsWith(cs))) {
+            score += 0.20;
+            tokenHit = true;
+          }
+        }
+
+        if (tokenHit) {
+          matchedTokensCount++;
         }
       }
 
-      // If no query tokens matched content, score remains 0 (prevents spurious matches)
-      if (tokenMatches === 0 && !contentLower.includes(queryLower)) {
-        continue;
-      }
-
-      // Normalization
-      if (queryTokens.length > 0) {
-        const matchRatio = tokenMatches / queryTokens.length;
-        score = Math.min(0.99, score + matchRatio * 0.4);
-      }
-
-      // Semantic proximity boost for key industry terms
-      const keySynonyms: Record<string, string[]> = {
-        onboard: ["stage", "hire", "orientation", "buddy", "credential", "day"],
-        price: ["package", "month", "retainer", "rate", "hourly", "overage", "tier"],
-        pricing: ["package", "month", "retainer", "rate", "hourly", "overage", "tier"],
-        refund: ["cancellation", "deposit", "sow", "terminate", "credit"],
-        cancel: ["cancellation", "refund", "notice", "days"],
-        expense: ["stipend", "allowance", "reimbursement", "travel", "meal", "per diem"],
-        incident: ["p1", "p2", "severity", "postmortem", "outage", "escalation"],
-        compensation: ["equity", "severance", "board", "director", "executive"],
-      };
-
+      // Check semantic synonyms
       for (const [key, related] of Object.entries(keySynonyms)) {
-        if (queryLower.includes(key)) {
+        if (queryLower.includes(key) || queryTokens.includes(key)) {
           for (const rel of related) {
-            if (contentLower.includes(rel)) {
-              score += 0.1;
+            if (contentLower.includes(rel) || sectionLower.includes(rel) || titleLower.includes(rel)) {
+              score += 0.12;
+              matchedTokensCount++;
+              break;
             }
           }
         }
+      }
+
+      // If no query tokens or synonyms matched, skip this chunk
+      if (matchedTokensCount === 0 && !allTextLower.includes(queryLower)) {
+        continue;
+      }
+
+      // Match ratio bonus
+      if (queryTokens.length > 0) {
+        const matchRatio = Math.min(1.0, matchedTokensCount / queryTokens.length);
+        score = Math.min(0.99, score + matchRatio * 0.4);
       }
 
       if (score >= minSimilarity) {
@@ -373,8 +455,8 @@ export class KnowledgeStore {
       organization_id: data.organization_id || "org-acme-01",
       user_id: data.user_id || "usr-admin-01",
       title: data.title || "New Conversation",
-      model_used: data.model_used || "google/gemini-2.0-flash-exp:free",
-      provider_used: data.provider_used || "openrouter",
+      model_used: data.model_used || "nvidia/nemotron-3.5-lightning-30b-a3b",
+      provider_used: data.provider_used || "nvidia",
       is_demo: data.is_demo ?? true,
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
