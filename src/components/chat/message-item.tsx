@@ -121,6 +121,24 @@ export function MessageItem({ message, onRegenerate, isStreaming }: MessageItemP
     );
   };
 
+  // Dedicated Clean Thinking State (Just like real chat typing indicator - no boxes, no model names, no labels)
+  if (isAssistant && isStreaming && !message.content) {
+    return (
+      <div className="py-2.5 px-4 sm:px-6 transition-colors animate-fade-in">
+        <div className="max-w-3xl w-full mx-auto flex items-center gap-3">
+          <div className="w-7 h-7 rounded-full flex-shrink-0 flex items-center justify-center bg-foreground text-background shadow-apple select-none">
+            <Sparkles className="w-3.5 h-3.5 animate-pulse" />
+          </div>
+          <div className="inline-flex items-center gap-1.5 px-3.5 py-2.5 rounded-2xl bg-black/[0.04] dark:bg-white/[0.08] backdrop-blur-xl">
+            <span className="w-2 h-2 rounded-full bg-foreground/70 animate-dot-1" />
+            <span className="w-2 h-2 rounded-full bg-foreground/70 animate-dot-2" />
+            <span className="w-2 h-2 rounded-full bg-foreground/70 animate-dot-3" />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div
       className={cn(
@@ -138,7 +156,7 @@ export function MessageItem({ message, onRegenerate, isStreaming }: MessageItemP
           /* Assistant Answer: Frosted Apple Card */
           <div className="flex gap-4 p-4 rounded-2xl bg-white/80 dark:bg-black/40 backdrop-blur-2xl border border-black/8 dark:border-white/10 shadow-sm">
             {/* Assistant Monogram */}
-            <div className="w-7 h-7 rounded-lg flex-shrink-0 flex items-center justify-center text-xs mt-0.5 bg-foreground text-background shadow-apple select-none">
+            <div className="w-7 h-7 rounded-full flex-shrink-0 flex items-center justify-center text-xs mt-0.5 bg-foreground text-background shadow-apple select-none">
               <Sparkles className="w-3.5 h-3.5" />
             </div>
 
@@ -149,11 +167,6 @@ export function MessageItem({ message, onRegenerate, isStreaming }: MessageItemP
                   <span className="text-[13px] font-semibold text-foreground">
                     KnowledgeOS
                   </span>
-                  {message.model_identifier && (
-                    <span className="text-[10.5px] font-mono text-muted-foreground bg-white/50 dark:bg-white/10 backdrop-blur-md px-2 py-0.5 rounded-full border border-black/8 dark:border-white/12">
-                      {message.model_identifier.replace(":free", "")}
-                    </span>
-                  )}
                 </div>
 
                 {/* Copy / Regenerate Actions */}
@@ -181,26 +194,13 @@ export function MessageItem({ message, onRegenerate, isStreaming }: MessageItemP
                 )}
               </div>
 
-              {/* Rendered Text or Thinking Animation */}
-              {isStreaming && !message.content ? (
-                <div className="flex items-center gap-3 py-1.5 px-0.5">
-                  <div className="flex items-center gap-1.5 py-1">
-                    <span className="w-2 h-2 rounded-full bg-foreground/80 animate-dot-1" />
-                    <span className="w-2 h-2 rounded-full bg-foreground/80 animate-dot-2" />
-                    <span className="w-2 h-2 rounded-full bg-foreground/80 animate-dot-3" />
-                  </div>
-                  <span className="text-[12.5px] font-medium tracking-tight text-muted-foreground/80 select-none">
-                    Thinking...
-                  </span>
-                </div>
-              ) : (
-                <div className="prose-apple">
-                  {renderCustomMarkdown(message.content)}
-                  {isStreaming && (
-                    <span className="inline-block w-1.5 h-4 ml-1 bg-foreground animate-pulse align-middle" />
-                  )}
-                </div>
-              )}
+              {/* Rendered Text with typing cursor during streaming */}
+              <div className="prose-apple">
+                {renderCustomMarkdown(message.content)}
+                {isStreaming && (
+                  <span className="inline-block w-1.5 h-4 ml-1 bg-foreground animate-pulse align-middle" />
+                )}
+              </div>
 
               {/* Source References Section */}
               {message.source_references && message.source_references.length > 0 && (
