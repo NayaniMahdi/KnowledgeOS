@@ -12,7 +12,7 @@ export async function POST(req: NextRequest) {
       conversationId: reqConvId,
       message,
       provider = "nvidia",
-      model = "nvidia/nemotron-3.5-lightning-30b-a3b",
+      model = "nvidia/nemotron-3.5-bolt-e4b",
       userRole = "admin",
       userDepartment = "Executive",
     } = body;

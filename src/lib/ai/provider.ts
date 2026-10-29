@@ -403,7 +403,7 @@ ${contextText.length > 0 ? contextText : "NO SPECIFIC DOCUMENT SOURCES FOUND FOR
     ];
 
     // Priority configuration: Fast NVIDIA TensorRT by default, OpenRouter Gemma 4 / Llama 3.1 as fallback
-    const defaultNvidiaModel = "nvidia/nemotron-3.5-lightning-30b-a3b";
+    const defaultNvidiaModel = "nvidia/nemotron-3.5-bolt-e4b";
     const defaultOpenRouterModel = "google/gemma-4-31b-it";
 
     const primaryProvider: AIProvider = provider || "nvidia";
@@ -428,10 +428,10 @@ ${contextText.length > 0 ? contextText : "NO SPECIFIC DOCUMENT SOURCES FOUND FOR
       // Fallback is NVIDIA
       if (primaryModel.toLowerCase().includes("gemma")) {
         fallbackModel = "google/diffusiongemma-26b-a4b-it";
-      } else if (primaryModel.includes("bolt")) {
-        fallbackModel = "nvidia/nemotron-3.5-bolt-e4b";
-      } else {
+      } else if (primaryModel.includes("lightning")) {
         fallbackModel = "nvidia/nemotron-3.5-lightning-30b-a3b";
+      } else {
+        fallbackModel = "nvidia/nemotron-3.5-bolt-e4b";
       }
     }
 

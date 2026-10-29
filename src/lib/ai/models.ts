@@ -3,20 +3,20 @@ import { AIModelOption } from "@/lib/types";
 export const SUPPORTED_MODELS: AIModelOption[] = [
   // Fast & Free NVIDIA Models (TensorRT Accelerated)
   {
+    id: "nvidia/nemotron-3.5-bolt-e4b",
+    name: "NVIDIA Nemotron 3.5 Bolt (Ultra Fast)",
+    provider: "nvidia",
+    is_free: true,
+    context_length: 65536,
+    description: "Blazing fast ~380ms speed optimized for instantaneous document answers and queries.",
+  },
+  {
     id: "nvidia/nemotron-3.5-lightning-30b-a3b",
     name: "NVIDIA Nemotron 3.5 Lightning (30B)",
     provider: "nvidia",
     is_free: true,
     context_length: 131072,
-    description: "Ultra-fast ~500ms conversational inference hosted on NVIDIA TensorRT cloud engines.",
-  },
-  {
-    id: "nvidia/nemotron-3.5-bolt-e4b",
-    name: "NVIDIA Nemotron 3.5 Bolt (E4B)",
-    provider: "nvidia",
-    is_free: true,
-    context_length: 65536,
-    description: "Blazing fast ~280ms speed optimized for rapid document lookups and queries.",
+    description: "Deep reasoning conversational model on NVIDIA TensorRT cloud engines.",
   },
   {
     id: "google/diffusiongemma-26b-a4b-it",

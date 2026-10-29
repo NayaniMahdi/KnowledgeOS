@@ -64,7 +64,7 @@ export function KnowledgeProvider({ children }: { children: React.ReactNode }) {
   const [theme, setThemeState] = useState<"system" | "light" | "dark">("dark");
   const [demoMode, setDemoModeState] = useState<boolean>(true);
   const [selectedProvider, setSelectedProviderState] = useState<AIProvider>("nvidia");
-  const [selectedModel, setSelectedModelState] = useState<string>("nvidia/nemotron-3.5-lightning-30b-a3b");
+  const [selectedModel, setSelectedModelState] = useState<string>("nvidia/nemotron-3.5-bolt-e4b");
 
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [activeConversationId, setActiveConversationId] = useState<string | null>("conv-demo-01");
@@ -97,8 +97,13 @@ export function KnowledgeProvider({ children }: { children: React.ReactNode }) {
     }
 
     const savedModel = localStorage.getItem("kos_selected_model");
-    if (savedModel) {
+    if (savedModel && savedModel !== "nvidia/nemotron-3.5-lightning-30b-a3b") {
       setSelectedModelState(savedModel);
+    } else {
+      setSelectedModelState("nvidia/nemotron-3.5-bolt-e4b");
+      try {
+        localStorage.setItem("kos_selected_model", "nvidia/nemotron-3.5-bolt-e4b");
+      } catch {}
     }
 
     const savedProvider = localStorage.getItem("kos_selected_provider") as AIProvider | null;

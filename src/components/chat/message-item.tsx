@@ -121,18 +121,18 @@ export function MessageItem({ message, onRegenerate, isStreaming }: MessageItemP
     );
   };
 
-  // Dedicated Clean Thinking State (Just like real chat typing indicator - no boxes, no model names, no labels)
+  // Dedicated Clean Thinking State (Authentic Apple / ChatGPT Typing Indicator)
   if (isAssistant && isStreaming && !message.content) {
     return (
-      <div className="py-2.5 px-4 sm:px-6 transition-colors animate-fade-in">
+      <div className="py-3 px-4 sm:px-6 transition-colors animate-fade-in">
         <div className="max-w-3xl w-full mx-auto flex items-center gap-3">
           <div className="w-7 h-7 rounded-full flex-shrink-0 flex items-center justify-center bg-foreground text-background shadow-apple select-none">
             <Sparkles className="w-3.5 h-3.5 animate-pulse" />
           </div>
-          <div className="inline-flex items-center gap-1.5 px-3.5 py-2.5 rounded-2xl bg-black/[0.04] dark:bg-white/[0.08] backdrop-blur-xl">
-            <span className="w-2 h-2 rounded-full bg-foreground/70 animate-dot-1" />
-            <span className="w-2 h-2 rounded-full bg-foreground/70 animate-dot-2" />
-            <span className="w-2 h-2 rounded-full bg-foreground/70 animate-dot-3" />
+          <div className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-2xl bg-black/[0.06] dark:bg-white/[0.12] backdrop-blur-2xl border border-black/8 dark:border-white/15 shadow-apple">
+            <span className="inline-block w-2.5 h-2.5 rounded-full bg-foreground/80 animate-dot-1" />
+            <span className="inline-block w-2.5 h-2.5 rounded-full bg-foreground/80 animate-dot-2" />
+            <span className="inline-block w-2.5 h-2.5 rounded-full bg-foreground/80 animate-dot-3" />
           </div>
         </div>
       </div>
