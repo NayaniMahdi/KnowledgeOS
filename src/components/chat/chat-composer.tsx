@@ -68,9 +68,9 @@ export function ChatComposer({
       {isModelSelectorOpen && (
         <div
           ref={selectorRef}
-          className="absolute bottom-full mb-2 left-4 w-72 sm:w-80 bg-surface border border-border rounded-xl shadow-apple p-2 z-30 animate-fade-in"
+          className="absolute bottom-full mb-2 left-4 w-72 sm:w-80 bg-surface border border-border rounded-2xl shadow-popover p-2 z-30 animate-fade-in"
         >
-          <div className="text-[11px] font-semibold text-muted-foreground uppercase px-2 py-1 tracking-wider">
+          <div className="text-[10.5px] font-semibold text-muted-foreground uppercase px-2 py-1 tracking-wider">
             Active Provider & Model
           </div>
           <div className="max-h-60 overflow-y-auto space-y-1">
@@ -83,9 +83,9 @@ export function ChatComposer({
                   setIsModelSelectorOpen(false);
                 }}
                 className={cn(
-                  "w-full text-left p-2 rounded-lg text-xs flex items-center justify-between transition-colors",
+                  "w-full text-left p-2 rounded-xl text-xs flex items-center justify-between transition-colors",
                   selectedModel === model.id
-                    ? "bg-accent-subtle text-accent font-medium"
+                    ? "bg-black/8 dark:bg-white/12 text-foreground font-semibold"
                     : "hover:bg-surface-hover text-foreground"
                 )}
               >
@@ -93,7 +93,7 @@ export function ChatComposer({
                   <div className="flex items-center gap-1.5 truncate">
                     <span className="truncate">{model.name}</span>
                     {model.is_free && (
-                      <span className="text-[9px] px-1.5 py-0.2 rounded-full bg-status-success/15 text-status-success font-medium">
+                      <span className="text-[9px] px-1.5 py-0.2 rounded-full bg-black/6 dark:bg-white/12 text-foreground font-mono">
                         Free
                       </span>
                     )}
@@ -102,23 +102,23 @@ export function ChatComposer({
                     {model.provider}
                   </div>
                 </div>
-                {selectedModel === model.id && <Check className="w-4 h-4 flex-shrink-0" />}
+                {selectedModel === model.id && <Check className="w-3.5 h-3.5 text-foreground flex-shrink-0" />}
               </button>
             ))}
           </div>
         </div>
       )}
 
-      {/* Main Composer Box */}
-      <div className="relative flex flex-col bg-surface border border-border rounded-2xl shadow-apple transition-shadow hover:shadow-apple-hover focus-within:border-accent/60">
+      {/* Floating Apple-Style Composer Box */}
+      <div className="relative flex flex-col bg-surface border border-black/8 dark:border-white/12 rounded-2xl shadow-apple transition-shadow hover:shadow-apple-hover focus-within:border-foreground/30">
         <textarea
           ref={textareaRef}
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={handleKeyDown}
-          placeholder="Ask a question about company policies, SOPs, pricing, or procedures..."
+          placeholder="Ask a question about policies, procedures, pricing, or internal projects..."
           rows={1}
-          className="w-full resize-none bg-transparent px-4 pt-3.5 pb-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none leading-relaxed max-h-[200px]"
+          className="w-full resize-none bg-transparent px-4 pt-3.5 pb-2 text-[14.5px] text-foreground placeholder:text-muted-foreground focus:outline-none leading-relaxed max-h-[200px]"
         />
 
         {/* Footer Controls */}
@@ -128,21 +128,21 @@ export function ChatComposer({
             {/* Model Pill Button */}
             <button
               onClick={() => setIsModelSelectorOpen(!isModelSelectorOpen)}
-              className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-medium bg-surface-secondary text-foreground hover:bg-surface-hover border border-border transition-colors select-none"
+              className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11.5px] font-medium bg-black/4 dark:bg-white/8 text-foreground hover:bg-surface-hover border border-black/6 dark:border-white/10 transition-colors select-none shadow-subtle"
               title="Change active model"
             >
-              <Sparkles className="w-3 h-3 text-accent" />
+              <Sparkles className="w-3 h-3 opacity-70" />
               <span className="truncate max-w-[130px] sm:max-w-[170px]">
                 {activeModelObj?.name || selectedModel}
               </span>
-              <ChevronDown className="w-3 h-3 text-muted-foreground" />
+              <ChevronDown className="w-3 h-3 opacity-60" />
             </button>
 
             {/* Quick Upload Button */}
             {onOpenUpload && (
               <button
                 onClick={onOpenUpload}
-                className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-surface-hover transition-colors"
+                className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
                 title="Upload document to knowledge base"
                 aria-label="Upload document"
               >
@@ -151,12 +151,12 @@ export function ChatComposer({
             )}
           </div>
 
-          {/* Right: Send or Stop Button */}
+          {/* Right: Send or Stop Button (Apple Circular Control) */}
           <div className="flex items-center gap-2">
             {isStreaming ? (
               <button
                 onClick={onStopGeneration}
-                className="w-8 h-8 rounded-full bg-foreground text-background flex items-center justify-center hover:opacity-90 transition-opacity"
+                className="w-8 h-8 rounded-full bg-foreground text-background flex items-center justify-center hover:opacity-90 active:scale-95 transition-all shadow-apple"
                 title="Stop generating"
                 aria-label="Stop generating"
               >
@@ -167,24 +167,24 @@ export function ChatComposer({
                 onClick={handleSubmit}
                 disabled={!input.trim()}
                 className={cn(
-                  "w-8 h-8 rounded-full flex items-center justify-center transition-all shadow-subtle",
+                  "w-8 h-8 rounded-full flex items-center justify-center transition-all shadow-apple",
                   input.trim()
-                    ? "bg-accent text-accent-foreground hover:bg-accent-hover scale-100"
-                    : "bg-surface-secondary text-muted-foreground cursor-not-allowed opacity-50"
+                    ? "bg-foreground text-background hover:opacity-90 active:scale-95 cursor-pointer"
+                    : "bg-black/5 dark:bg-white/10 text-muted-foreground cursor-not-allowed opacity-40"
                 )}
                 title="Send message"
                 aria-label="Send message"
               >
-                <ArrowUp className="w-4 h-4" />
+                <ArrowUp className="w-4 h-4 stroke-[2.2]" />
               </button>
             )}
           </div>
         </div>
       </div>
 
-      <div className="text-center mt-2">
+      <div className="text-center mt-2.5">
         <span className="text-[11px] text-muted-foreground">
-          KnowledgeOS answers are strictly grounded in authorized internal company documents.
+          KnowledgeOS answers are grounded in approved internal documents • Private & confidential
         </span>
       </div>
     </div>

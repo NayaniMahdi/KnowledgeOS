@@ -27,42 +27,42 @@ export const MOCK_CATEGORIES: DocumentCategory[] = [
     name: "Standard Operating Procedures",
     slug: "sop",
     description: "Core operational workflows, checklists, and execution protocols",
-    color: "#365C49",
+    color: "#0A84FF", // Apple Blue
   },
   {
     id: "cat-pricing",
     name: "Services and Pricing",
     slug: "services-pricing",
     description: "Commercial service tiers, hourly rates, discount structures, and SLAs",
-    color: "#3B6D55",
+    color: "#5E5CE6", // Apple Indigo
   },
   {
     id: "cat-policies",
     name: "Company Policies",
     slug: "policies",
     description: "Employee conduct, remote work, equipment stipends, and legal guidelines",
-    color: "#4E7D68",
+    color: "#FF9F0A", // Apple Orange
   },
   {
     id: "cat-faq",
     name: "Frequently Asked Questions",
     slug: "faq",
     description: "Official answers to recurring questions from employees and clients",
-    color: "#5C8C76",
+    color: "#BF5AF2", // Apple Purple
   },
   {
     id: "cat-hr",
     name: "Human Resources",
     slug: "hr",
     description: "Benefits coverage, parental leave, PTO, and performance reviews",
-    color: "#6A9B84",
+    color: "#64D2FF", // Apple Cyan
   },
   {
     id: "cat-admin",
     name: "Executive & Compliance",
     slug: "executive",
     description: "Confidential executive governance, audit procedures, and board directives",
-    color: "#2C4436",
+    color: "#8E8E93", // Apple System Gray
   },
 ];
 

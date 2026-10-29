@@ -5,8 +5,7 @@ import { Sidebar } from "@/components/layout/sidebar";
 import { Header } from "@/components/layout/header";
 import { useKnowledge } from "@/context/knowledge-context";
 import { DocumentChunk, SourceCitation } from "@/lib/types";
-import { Search, FileText, ArrowRight, ShieldCheck, Tag } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { Search, ArrowRight, ShieldCheck, Tag } from "lucide-react";
 
 export default function SearchPage() {
   const { currentUser, openCitation } = useKnowledge();
@@ -62,13 +61,13 @@ export default function SearchPage() {
           title="Search & Sources"
         />
 
-        <main className="flex-1 overflow-y-auto p-4 sm:p-6 max-w-4xl w-full mx-auto space-y-6">
+        <main className="flex-1 overflow-y-auto p-4 sm:p-8 max-w-4xl w-full mx-auto space-y-6">
           {/* Header */}
           <div>
-            <h1 className="text-xl font-semibold tracking-tight text-foreground">
+            <h1 className="text-2xl font-semibold tracking-[-0.03em] text-foreground">
               Knowledge Base Search
             </h1>
-            <p className="text-xs text-muted-foreground mt-0.5">
+            <p className="text-[13px] text-muted-foreground mt-0.5">
               Direct semantic and keyword passage search with permission filtering for{" "}
               <span className="font-semibold text-foreground">
                 {currentUser.full_name} ({currentUser.role})
@@ -77,24 +76,24 @@ export default function SearchPage() {
             </p>
           </div>
 
-          {/* Search Box */}
+          {/* Search Box - Apple Spotlight Style */}
           <div className="relative">
             <Search className="w-4 h-4 text-muted-foreground absolute left-3.5 top-3.5" />
             <input
               type="text"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search across all approved SOPs, pricing schedules, policies, and FAQs..."
-              className="w-full pl-10 pr-4 py-3 text-sm bg-surface border border-border rounded-xl placeholder:text-muted-foreground focus:outline-none focus:border-accent shadow-subtle"
+              placeholder="Search approved SOPs, pricing packages, policies, and FAQs..."
+              className="w-full pl-10 pr-4 py-3 text-[14px] bg-surface border border-black/8 dark:border-white/12 rounded-2xl placeholder:text-muted-foreground focus:outline-none focus:border-foreground/30 shadow-apple transition-colors"
               autoFocus
             />
           </div>
 
           {/* Role access notice */}
-          <div className="flex items-center gap-2 p-3 rounded-xl bg-surface-secondary/70 border border-border text-xs text-muted-foreground">
-            <ShieldCheck className="w-4 h-4 text-accent flex-shrink-0" />
-            <span>
-              Search results automatically exclude confidential documents outside your department or role access scope.
+          <div className="flex items-center gap-2 p-3 rounded-2xl bg-black/4 dark:bg-white/6 border border-border text-xs text-muted-foreground">
+            <ShieldCheck className="w-4 h-4 text-foreground opacity-80 flex-shrink-0" />
+            <span className="text-[12px]">
+              Search automatically filters out confidential documents outside your department and role permissions.
             </span>
           </div>
 
@@ -106,8 +105,8 @@ export default function SearchPage() {
               </div>
             ) : query.trim() && results.length === 0 ? (
               <div className="py-12 text-center text-xs text-muted-foreground space-y-1">
-                <p className="font-medium text-foreground">No matching passages found.</p>
-                <p>Try using different keywords or check if the document is restricted to another department.</p>
+                <p className="font-semibold text-foreground text-sm">No matching passages found</p>
+                <p>Try searching with different terms or verify department permissions.</p>
               </div>
             ) : (
               results.map((chunk, idx) => {
@@ -126,20 +125,20 @@ export default function SearchPage() {
                   <div
                     key={chunk.id}
                     onClick={() => openCitation(citation)}
-                    className="p-4 rounded-xl bg-surface border border-border hover:border-accent/40 hover:bg-surface-hover/60 transition-all cursor-pointer shadow-subtle group"
+                    className="p-4 rounded-2xl bg-surface border border-black/6 dark:border-white/10 hover:border-foreground/30 hover:shadow-apple transition-all cursor-pointer shadow-subtle group"
                   >
                     <div className="flex items-center justify-between gap-2 mb-2">
                       <div className="flex items-center gap-2">
-                        <span className="w-6 h-6 rounded bg-accent-subtle text-accent text-xs font-mono font-medium flex items-center justify-center">
+                        <span className="w-6 h-6 rounded-md bg-black/5 dark:bg-white/10 text-foreground text-xs font-mono font-medium flex items-center justify-center">
                           #{idx + 1}
                         </span>
-                        <h3 className="text-xs font-semibold text-foreground group-hover:text-accent transition-colors">
+                        <h3 className="text-[13.5px] font-semibold text-foreground group-hover:opacity-90 transition-opacity tracking-tight">
                           {chunk.document_title}
                         </h3>
                       </div>
                       <div className="flex items-center gap-2 text-[11px] text-muted-foreground font-mono">
                         {chunk.similarity && (
-                          <span className="px-1.5 py-0.5 rounded bg-surface-secondary border border-border">
+                          <span className="px-2 py-0.5 rounded-full bg-surface-secondary border border-border">
                             {Math.round(chunk.similarity * 100)}% Match
                           </span>
                         )}
@@ -149,13 +148,13 @@ export default function SearchPage() {
                       </div>
                     </div>
 
-                    <p className="text-xs text-foreground/90 font-serif leading-relaxed line-clamp-3">
+                    <p className="text-[13.5px] text-foreground/90 font-serif leading-relaxed line-clamp-3">
                       “{chunk.content}”
                     </p>
 
-                    <div className="mt-3 pt-2.5 border-t border-border/60 flex items-center justify-between text-[11px] text-muted-foreground">
+                    <div className="mt-3.5 pt-2.5 border-t border-black/6 dark:border-white/10 flex items-center justify-between text-[11px] text-muted-foreground">
                       <div className="flex items-center gap-2">
-                        <Tag className="w-3 h-3 text-accent" />
+                        <Tag className="w-3 h-3 opacity-60" />
                         <span>{chunk.category_name || "Company Documentation"}</span>
                         {chunk.section_title && (
                           <>
@@ -164,8 +163,8 @@ export default function SearchPage() {
                           </>
                         )}
                       </div>
-                      <span className="inline-flex items-center gap-1 text-accent font-medium group-hover:translate-x-0.5 transition-transform">
-                        <span>View source passage</span>
+                      <span className="inline-flex items-center gap-1 font-semibold text-foreground group-hover:translate-x-0.5 transition-transform">
+                        <span>Inspect passage</span>
                         <ArrowRight className="w-3 h-3" />
                       </span>
                     </div>

@@ -22,50 +22,49 @@ export function Logo({ className, size = "md", showWordmark = true }: LogoProps)
 
   return (
     <div className={cn("inline-flex items-center gap-2.5 select-none", className)}>
-      {/* Precision Geometric Knowledge Symbol */}
+      {/* Precision Apple-Style Monochromatic Emblem */}
       <div
         className={cn(
-          "relative flex items-center justify-center rounded-lg bg-surface border border-border shadow-subtle text-accent overflow-hidden transition-transform hover:scale-[1.02]",
+          "relative flex items-center justify-center rounded-[10px] bg-foreground text-background shadow-apple transition-transform hover:scale-[1.02]",
           iconSizes[size]
         )}
       >
         <svg
-          viewBox="0 0 28 28"
+          viewBox="0 0 24 24"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
-          className="w-full h-full p-1"
+          className="w-full h-full p-1.5"
         >
-          {/* Subtle background tone */}
-          <rect width="28" height="28" rx="6" fill="currentColor" fillOpacity="0.08" />
-          
-          {/* Layered Document / Knowledge Folio Leaves */}
+          {/* Layered Document & Aperture Geometry in Pure Contrast */}
           <path
-            d="M6 8.5C6 7.67157 6.67157 7 7.5 7H14.5C15.3284 7 16 7.67157 16 8.5V20.5C16 21.3284 15.3284 22 14.5 22H7.5C6.67157 22 6 21.3284 6 20.5V8.5Z"
+            d="M5 6C5 4.89543 5.89543 4 7 4H14L19 9V18C19 19.1046 18.1046 20 17 20H7C5.89543 20 5 19.1046 5 18V6Z"
             fill="currentColor"
-            fillOpacity="0.85"
-          />
-          <path
-            d="M12 7.5C12 6.67157 12.6716 6 13.5 6H20.5C21.3284 6 22 6.67157 22 7.5V19.5C22 20.3284 21.3284 21 20.5 21H13.5C12.6716 21 12 20.3284 12 19.5V7.5Z"
+            fillOpacity="0.15"
             stroke="currentColor"
-            strokeWidth="1.5"
-            strokeLinecap="round"
+            strokeWidth="1.6"
+            strokeLinejoin="round"
           />
-          {/* Precision Alignment Notch */}
-          <circle cx="10" cy="11" r="1.25" fill="#FFFFFF" fillOpacity="0.9" />
           <path
-            d="M9 15H13"
-            stroke="#FFFFFF"
-            strokeWidth="1.2"
+            d="M14 4V9H19"
+            stroke="currentColor"
+            strokeWidth="1.6"
+            strokeLinejoin="round"
+          />
+          <circle cx="10" cy="14" r="1.5" fill="currentColor" />
+          <path
+            d="M13.5 14H16"
+            stroke="currentColor"
+            strokeWidth="1.6"
             strokeLinecap="round"
           />
         </svg>
       </div>
 
-      {/* Professional Typography Wordmark */}
+      {/* Apple SF-Style Clean Typography */}
       {showWordmark && (
-        <div className="flex items-baseline tracking-tight">
-          <span className={cn("text-foreground font-semibold tracking-[-0.02em]", textSizes[size])}>
-            Knowledge<span className="text-accent font-medium">OS</span>
+        <div className="flex items-baseline tracking-[-0.03em]">
+          <span className={cn("text-foreground font-semibold tracking-[-0.03em]", textSizes[size])}>
+            Knowledge<span className="font-normal opacity-85">OS</span>
           </span>
         </div>
       )}

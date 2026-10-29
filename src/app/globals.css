@@ -4,60 +4,65 @@
 
 @layer base {
   :root {
-    --background: #FAFAF8;
-    --foreground: #202124;
+    --background: #F5F5F7;
+    --foreground: #1D1D1F;
     
     --surface: #FFFFFF;
-    --surface-secondary: #F4F4F1;
-    --surface-hover: #F0F0EC;
-    --surface-active: #E8E8E3;
+    --surface-secondary: #EBEBED;
+    --surface-hover: #E3E3E8;
+    --surface-active: #D8D8DC;
     
-    --muted: #F0F0ED;
-    --muted-foreground: #686B70;
+    --muted: #EBEBED;
+    --muted-foreground: #6E6E73;
     
-    --border: #E8E9E6;
-    --border-subtle: #F0F0EC;
+    --border: #E5E5EA;
+    --border-subtle: #F0F0F2;
     
-    --accent: #365C49;
+    /* Authentic Apple Monochromatic Accent */
+    --accent: #000000;
     --accent-foreground: #FFFFFF;
-    --accent-subtle: #EAF0EB;
-    --accent-hover: #2C4B3C;
+    --accent-subtle: #E8E8ED;
+    --accent-hover: #2C2C2E;
     
-    --success: #2E6B47;
-    --warning: #B26A00;
-    --danger: #B43C3C;
-    --info: #355C7D;
+    --apple-blue: #0071E3;
+    --success: #34C759;
+    --warning: #FF9500;
+    --danger: #FF3B30;
+    --info: #0071E3;
 
-    --radius-sm: 6px;
-    --radius-md: 10px;
-    --radius-lg: 14px;
-    --radius-xl: 18px;
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --radius-xl: 20px;
   }
 
   .dark {
-    --background: #171816;
-    --foreground: #F3F3EF;
+    /* Pure Pitch / OLED Black */
+    --background: #000000;
+    --foreground: #F5F5F7;
     
-    --surface: #20211F;
-    --surface-secondary: #282926;
-    --surface-hover: #2E302D;
-    --surface-active: #373935;
+    --surface: #121214;
+    --surface-secondary: #1C1C1E;
+    --surface-hover: #262629;
+    --surface-active: #2F2F33;
     
-    --muted: #242522;
-    --muted-foreground: #A6A8A2;
+    --muted: #1C1C1E;
+    --muted-foreground: #8E8E93;
     
-    --border: #343632;
-    --border-subtle: #292B27;
+    --border: #26262A;
+    --border-subtle: #1C1C1E;
     
-    --accent: #9BB8A4;
-    --accent-foreground: #142018;
-    --accent-subtle: #29352C;
-    --accent-hover: #ABC6B4;
+    /* Crisp White Accent on Pitch Black */
+    --accent: #FFFFFF;
+    --accent-foreground: #000000;
+    --accent-subtle: #242428;
+    --accent-hover: #E5E5EA;
     
-    --success: #68B684;
-    --warning: #DE9334;
-    --danger: #DF6565;
-    --info: #6DA2CA;
+    --apple-blue: #0A84FF;
+    --success: #30D158;
+    --warning: #FF9F0A;
+    --danger: #FF453A;
+    --info: #0A84FF;
   }
 
   * {
@@ -71,13 +76,15 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
+    font-size: 14px;
+    letter-spacing: -0.011em;
   }
 }
 
-/* Custom Scrollbar */
+/* Custom Minimalist Scrollbar */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
 }
 
 ::-webkit-scrollbar-track {
@@ -93,15 +100,24 @@
   background: var(--muted-foreground);
 }
 
-/* Apple-style smooth glassmorphic card & header backdrop */
+/* Apple-style smooth glassmorphic backdrop */
 .apple-blur {
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(28px) saturate(190%);
+  -webkit-backdrop-filter: blur(28px) saturate(190%);
+}
+
+.apple-card {
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
 }
 
 /* Typography refinements */
 .prose-apple {
   color: var(--foreground);
+  font-size: 14.5px;
+  line-height: 1.65;
 }
 
 .prose-apple h1, 
@@ -110,7 +126,7 @@
 .prose-apple h4 {
   color: var(--foreground);
   font-weight: 600;
-  letter-spacing: -0.015em;
+  letter-spacing: -0.02em;
 }
 
 .prose-apple p {
@@ -119,17 +135,31 @@
   margin-bottom: 0.6em;
 }
 
+.prose-apple ul, .prose-apple ol {
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+  padding-left: 1.25rem;
+}
+
+.prose-apple li {
+  margin-top: 0.25em;
+  margin-bottom: 0.25em;
+}
+
 .prose-apple code {
   font-family: var(--font-mono, monospace);
-  font-size: 0.875em;
+  font-size: 0.88em;
   background-color: var(--surface-secondary);
-  padding: 0.2em 0.4em;
-  border-radius: 4px;
+  color: var(--foreground);
+  padding: 0.2em 0.45em;
+  border-radius: 6px;
+  border: 1px solid var(--border);
 }
 
 .prose-apple pre {
   background-color: var(--surface-secondary);
   border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 0.75rem 1rem;
+  border-radius: 12px;
+  padding: 0.85rem 1.15rem;
+  overflow-x: auto;
 }

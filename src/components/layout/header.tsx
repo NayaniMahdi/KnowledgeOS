@@ -15,68 +15,68 @@ export function Header({ onToggleMobileMenu, title = "Knowledge Assistant" }: He
     useKnowledge();
 
   return (
-    <header className="h-14 border-b border-border bg-surface/80 apple-blur sticky top-0 z-20 flex items-center justify-between px-4 sm:px-6">
+    <header className="h-14 border-b border-black/5 dark:border-white/10 bg-background/85 dark:bg-black/85 apple-blur sticky top-0 z-20 flex items-center justify-between px-4 sm:px-6">
       {/* Left: Mobile Toggle & Page Title */}
       <div className="flex items-center gap-3">
         <button
           onClick={onToggleMobileMenu}
-          className="md:hidden p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-surface-hover transition-colors"
+          className="md:hidden p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
           aria-label="Open sidebar"
         >
           <Menu className="w-5 h-5" />
         </button>
 
-        <h2 className="text-sm font-semibold text-foreground tracking-tight">
+        <h2 className="text-[14px] font-semibold text-foreground tracking-[-0.015em]">
           {title}
         </h2>
       </div>
 
       {/* Right: Status Badges & Controls */}
-      <div className="flex items-center gap-2 sm:gap-3">
+      <div className="flex items-center gap-2 sm:gap-2.5">
         {/* Active Model Indicator */}
-        <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-surface-secondary text-[11px] font-medium text-foreground border border-border">
-          <Sparkles className="w-3 h-3 text-accent" />
-          <span className="capitalize">{selectedProvider}:</span>
-          <span className="text-muted-foreground font-mono">
+        <div className="hidden sm:flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface border border-black/5 dark:border-white/10 text-[11.5px] font-medium text-foreground shadow-subtle">
+          <Sparkles className="w-3 h-3 opacity-70" />
+          <span className="capitalize text-muted-foreground">{selectedProvider}:</span>
+          <span className="font-mono text-foreground">
             {selectedModel.split("/").pop()?.replace(":free", "")}
           </span>
         </div>
 
-        {/* Quick Role Indicator Pill */}
+        {/* Quick Role Switcher Pill */}
         <button
           onClick={() => switchUserRole(currentUser.role === "admin" ? "employee" : "admin")}
           className={cn(
-            "flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border transition-colors cursor-pointer select-none",
+            "flex items-center gap-1.5 px-3 py-1 rounded-full text-[11.5px] font-medium border transition-all cursor-pointer select-none shadow-subtle",
             currentUser.role === "admin"
-              ? "bg-accent-subtle text-accent border-accent/20 hover:bg-accent/20"
-              : "bg-surface-secondary text-muted-foreground border-border hover:bg-surface-hover"
+              ? "bg-foreground text-background border-foreground font-semibold"
+              : "bg-surface text-foreground border-border hover:bg-surface-hover"
           )}
           title="Click to toggle between Admin and Employee role"
         >
           <Shield className="w-3 h-3" />
-          <span>Role: {currentUser.role === "admin" ? "Admin" : "Employee"}</span>
+          <span>{currentUser.role === "admin" ? "Admin" : "Employee"}</span>
         </button>
 
         {/* Demo Mode Toggle */}
         <button
           onClick={() => setDemoMode(!demoMode)}
           className={cn(
-            "flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border transition-colors select-none",
+            "flex items-center gap-1.5 px-3 py-1 rounded-full text-[11.5px] font-medium border transition-all select-none shadow-subtle",
             demoMode
               ? "bg-surface text-foreground border-border hover:bg-surface-hover"
-              : "bg-status-success/10 text-status-success border-status-success/20"
+              : "bg-foreground text-background border-foreground font-semibold"
           )}
           title="Toggle Demo Mode"
         >
           {demoMode ? (
             <>
-              <ToggleRight className="w-4 h-4 text-accent" />
-              <span className="hidden sm:inline">Demo Mode: ON</span>
+              <ToggleRight className="w-3.5 h-3.5 text-foreground" />
+              <span className="hidden sm:inline">Demo Mode</span>
               <span className="sm:hidden">Demo</span>
             </>
           ) : (
             <>
-              <ToggleLeft className="w-4 h-4 text-muted-foreground" />
+              <ToggleLeft className="w-3.5 h-3.5 opacity-60" />
               <span className="hidden sm:inline">Production</span>
               <span className="sm:hidden">Prod</span>
             </>

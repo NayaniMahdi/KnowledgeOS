@@ -1,8 +1,8 @@
 "use client";
 
 import React from "react";
-import { Sparkles, ArrowRight, ShieldCheck, Compass, DollarSign, RefreshCw, FileText } from "lucide-react";
-import { Logo } from "@/lib/../components/ui/logo";
+import { ArrowRight, ShieldCheck, Compass, DollarSign, RefreshCw, FileText } from "lucide-react";
+import { Logo } from "@/components/ui/logo";
 
 interface WelcomeScreenProps {
   onSelectPrompt: (prompt: string) => void;
@@ -14,54 +14,54 @@ export function WelcomeScreen({ onSelectPrompt }: WelcomeScreenProps) {
       title: "Client Onboarding",
       question: "What is our client onboarding process?",
       icon: Compass,
-      description: "Learn about the 3-stage onboarding workflow and timeline",
+      description: "Review the 3-stage onboarding workflow, buddy pairing, and timeline",
     },
     {
       title: "Service Packages & Rates",
       question: "Explain our service packages and pricing.",
       icon: DollarSign,
-      description: "Review commercial retainer tiers and overage rates",
+      description: "Explore commercial retainer tiers, overage rates, and discount caps",
     },
     {
       title: "Refund & Cancellation",
       question: "What is the refund or cancellation policy?",
       icon: RefreshCw,
-      description: "Check notice periods, SOW terms, and deposit rules",
+      description: "Review notice periods, SOW terms, and non-refundable deposits",
     },
     {
       title: "Incident Response",
       question: "Explain our engineering incident severity escalation SOP.",
       icon: FileText,
-      description: "Review P1 through P4 classifications and postmortem rules",
+      description: "Understand P1-P4 classifications, SLA targets, and postmortem rules",
     },
   ];
 
   return (
     <div className="flex-1 flex flex-col items-center justify-center p-6 text-center max-w-2xl mx-auto animate-fade-in my-auto">
       {/* Brand Icon */}
-      <div className="mb-4">
+      <div className="mb-5">
         <Logo size="lg" showWordmark={false} />
       </div>
 
-      {/* Main Title */}
-      <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight text-foreground">
+      {/* Main Apple Title */}
+      <h1 className="text-2xl sm:text-3xl font-semibold tracking-[-0.03em] text-foreground leading-tight">
         Your company’s knowledge, <br className="hidden sm:inline" />
         one conversation away.
       </h1>
 
-      {/* Supporting Description */}
-      <p className="mt-3 text-sm text-muted-foreground leading-relaxed max-w-lg">
+      {/* Supporting Text */}
+      <p className="mt-3 text-[14px] text-muted-foreground leading-relaxed max-w-lg">
         Ask about policies, procedures, services, pricing, or internal projects.
-        Answers are verified and grounded in your approved company documentation.
+        Answers are strictly grounded in your approved company documentation.
       </p>
 
       {/* Trust & Grounding Pill */}
-      <div className="inline-flex items-center gap-2 mt-4 px-3 py-1 rounded-full bg-accent-subtle/80 text-accent text-xs font-medium border border-accent/20">
-        <ShieldCheck className="w-3.5 h-3.5" />
-        <span>Strictly grounded with source citations • Zero hallucinations</span>
+      <div className="inline-flex items-center gap-2 mt-4 px-3.5 py-1.2 rounded-full bg-black/4 dark:bg-white/8 text-foreground text-xs font-medium border border-black/8 dark:border-white/12 shadow-subtle">
+        <ShieldCheck className="w-3.5 h-3.5 opacity-80" />
+        <span>Grounded with exact source citations • Zero hallucinations</span>
       </div>
 
-      {/* Suggested Questions Grid */}
+      {/* Apple-styled Example Questions Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full mt-8 text-left">
         {examplePrompts.map((item, idx) => {
           const Icon = item.icon;
@@ -69,19 +69,19 @@ export function WelcomeScreen({ onSelectPrompt }: WelcomeScreenProps) {
             <button
               key={idx}
               onClick={() => onSelectPrompt(item.question)}
-              className="p-3.5 rounded-xl bg-surface border border-border hover:border-accent/40 hover:bg-surface-hover transition-all text-left group shadow-subtle flex flex-col justify-between"
+              className="p-4 rounded-2xl bg-surface border border-black/6 dark:border-white/10 hover:border-foreground/30 hover:shadow-apple transition-all text-left group shadow-subtle flex flex-col justify-between"
             >
               <div>
-                <div className="flex items-center justify-between mb-1.5">
-                  <div className="w-6 h-6 rounded-md bg-accent-subtle text-accent flex items-center justify-center">
-                    <Icon className="w-3.5 h-3.5" />
+                <div className="flex items-center justify-between mb-2">
+                  <div className="w-7 h-7 rounded-lg bg-black/4 dark:bg-white/8 text-foreground flex items-center justify-center">
+                    <Icon className="w-4 h-4 opacity-80" />
                   </div>
-                  <ArrowRight className="w-3.5 h-3.5 text-muted-foreground group-hover:text-accent group-hover:translate-x-0.5 transition-all" />
+                  <ArrowRight className="w-3.5 h-3.5 text-muted-foreground group-hover:text-foreground group-hover:translate-x-0.5 transition-all" />
                 </div>
-                <h4 className="text-xs font-semibold text-foreground group-hover:text-accent transition-colors">
+                <h4 className="text-[13.5px] font-semibold text-foreground group-hover:opacity-90 transition-opacity tracking-[-0.01em]">
                   {item.title}
                 </h4>
-                <p className="text-[12px] text-muted-foreground mt-0.5 line-clamp-1">
+                <p className="text-[12px] text-muted-foreground mt-1 line-clamp-2 leading-relaxed">
                   {item.description}
                 </p>
               </div>

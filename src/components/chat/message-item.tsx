@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import { ChatMessage, SourceCitation } from "@/lib/types";
+import { ChatMessage } from "@/lib/types";
 import { useKnowledge } from "@/context/knowledge-context";
 import { Copy, Check, RotateCw, FileText, Sparkles, User } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -25,19 +25,17 @@ export function MessageItem({ message, onRegenerate, isStreaming }: MessageItemP
     setTimeout(() => setCopied(false), 2000);
   };
 
-  // Convert raw "[1]", "[2]" citation markers in markdown into interactive components
+  // Convert raw "[1]", "[2]" citation markers in markdown into interactive Apple pills
   const renderCustomMarkdown = (content: string) => {
     return (
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
         components={{
-          // Render citation pills for [1], [2]
           p({ children }) {
             return (
-              <p className="my-2.5 leading-relaxed text-foreground">
+              <p className="my-2.5 leading-[1.68] text-[14.5px] text-foreground tracking-[-0.01em]">
                 {React.Children.map(children, (child) => {
                   if (typeof child === "string") {
-                    // Match pattern [1], [2], [1, 2]
                     const parts = child.split(/(\[\d+(?:,\s*\d+)*\])/g);
                     return parts.map((part, index) => {
                       const match = part.match(/\[(\d+(?:,\s*\d+)*)\]/);
@@ -54,7 +52,7 @@ export function MessageItem({ message, onRegenerate, isStreaming }: MessageItemP
                                   key={num}
                                   onClick={() => citation && openCitation(citation)}
                                   className={cn(
-                                    "inline-flex items-center justify-center px-1.5 py-0.2 text-[11px] font-mono font-medium rounded bg-accent-subtle text-accent border border-accent/20 hover:bg-accent hover:text-accent-foreground transition-all duration-150 cursor-pointer shadow-subtle",
+                                    "inline-flex items-center justify-center px-1.5 py-0.5 text-[11px] font-mono font-medium rounded-md bg-black/6 dark:bg-white/12 text-foreground border border-black/10 dark:border-white/15 hover:bg-foreground hover:text-background transition-all duration-150 cursor-pointer shadow-subtle",
                                     !citation && "opacity-70 cursor-default"
                                   )}
                                   title={
@@ -80,21 +78,21 @@ export function MessageItem({ message, onRegenerate, isStreaming }: MessageItemP
           },
           table({ children }) {
             return (
-              <div className="overflow-x-auto my-3 border border-border rounded-lg shadow-subtle">
+              <div className="overflow-x-auto my-3 border border-border rounded-xl shadow-subtle">
                 <table className="w-full text-left text-xs border-collapse bg-surface">{children}</table>
               </div>
             );
           },
           th({ children }) {
             return (
-              <th className="px-3 py-2 bg-surface-secondary text-foreground font-semibold border-b border-border">
+              <th className="px-3.5 py-2.5 bg-surface-secondary text-foreground font-semibold border-b border-border">
                 {children}
               </th>
             );
           },
           td({ children }) {
             return (
-              <td className="px-3 py-2 text-foreground border-b border-border/60">
+              <td className="px-3.5 py-2.5 text-foreground border-b border-border/60">
                 {children}
               </td>
             );
@@ -102,7 +100,7 @@ export function MessageItem({ message, onRegenerate, isStreaming }: MessageItemP
           code({ className, children, ...props }) {
             return (
               <code
-                className="bg-surface-secondary px-1.5 py-0.5 rounded text-[13px] font-mono text-foreground border border-border/50"
+                className="bg-black/5 dark:bg-white/10 px-1.5 py-0.5 rounded text-[13px] font-mono text-foreground border border-border/50"
                 {...props}
               >
                 {children}
@@ -111,7 +109,7 @@ export function MessageItem({ message, onRegenerate, isStreaming }: MessageItemP
           },
           pre({ children }) {
             return (
-              <pre className="p-3 my-2.5 rounded-lg bg-surface-secondary border border-border text-xs font-mono overflow-x-auto text-foreground">
+              <pre className="p-3.5 my-3 rounded-xl bg-surface-secondary border border-border text-xs font-mono overflow-x-auto text-foreground">
                 {children}
               </pre>
             );
@@ -127,101 +125,104 @@ export function MessageItem({ message, onRegenerate, isStreaming }: MessageItemP
     <div
       className={cn(
         "py-4 px-4 sm:px-6 transition-colors animate-fade-in",
-        isAssistant ? "bg-transparent" : "bg-surface-secondary/30 rounded-xl"
+        isAssistant ? "bg-transparent" : "flex justify-end"
       )}
     >
-      <div className="max-w-3xl mx-auto flex gap-4">
-        {/* Role Icon */}
-        <div
-          className={cn(
-            "w-7 h-7 rounded-lg flex-shrink-0 flex items-center justify-center text-xs mt-0.5 select-none",
-            isAssistant
-              ? "bg-accent-subtle text-accent border border-accent/20"
-              : "bg-surface border border-border text-foreground shadow-subtle"
-          )}
-        >
-          {isAssistant ? <Sparkles className="w-3.5 h-3.5" /> : <User className="w-3.5 h-3.5" />}
-        </div>
-
-        {/* Content */}
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center justify-between mb-1">
-            <div className="flex items-center gap-2">
-              <span className="text-xs font-semibold text-foreground">
-                {isAssistant ? "KnowledgeOS" : "You"}
-              </span>
-              {isAssistant && message.model_identifier && (
-                <span className="text-[11px] font-mono text-muted-foreground bg-surface-secondary px-1.5 py-0.2 rounded border border-border">
-                  {message.model_identifier.replace(":free", "")}
-                </span>
-              )}
+      <div className={cn("max-w-3xl w-full mx-auto", !isAssistant && "flex justify-end")}>
+        {!isAssistant ? (
+          /* User Bubble: Apple Messages Style */
+          <div className="max-w-[85%] rounded-2xl px-4 py-3 bg-surface border border-black/8 dark:border-white/10 text-foreground shadow-subtle text-[14.5px] leading-relaxed">
+            {message.content}
+          </div>
+        ) : (
+          /* Assistant Answer */
+          <div className="flex gap-4">
+            {/* Assistant Monogram */}
+            <div className="w-7 h-7 rounded-lg flex-shrink-0 flex items-center justify-center text-xs mt-0.5 bg-foreground text-background shadow-apple select-none">
+              <Sparkles className="w-3.5 h-3.5" />
             </div>
 
-            {/* Actions for Assistant message */}
-            {isAssistant && !isStreaming && (
-              <div className="flex items-center gap-1 opacity-70 hover:opacity-100 transition-opacity">
-                <button
-                  onClick={handleCopy}
-                  className="p-1 rounded text-muted-foreground hover:text-foreground hover:bg-surface-hover transition-colors"
-                  title="Copy answer"
-                  aria-label="Copy response"
-                >
-                  {copied ? <Check className="w-3.5 h-3.5 text-status-success" /> : <Copy className="w-3.5 h-3.5" />}
-                </button>
-                {onRegenerate && (
-                  <button
-                    onClick={onRegenerate}
-                    className="p-1 rounded text-muted-foreground hover:text-foreground hover:bg-surface-hover transition-colors"
-                    title="Regenerate answer"
-                    aria-label="Regenerate response"
-                  >
-                    <RotateCw className="w-3.5 h-3.5" />
-                  </button>
+            {/* Assistant Body */}
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center justify-between mb-1.5">
+                <div className="flex items-center gap-2">
+                  <span className="text-[13px] font-semibold text-foreground">
+                    KnowledgeOS
+                  </span>
+                  {message.model_identifier && (
+                    <span className="text-[10.5px] font-mono text-muted-foreground bg-black/4 dark:bg-white/8 px-2 py-0.5 rounded-full border border-black/6 dark:border-white/10">
+                      {message.model_identifier.replace(":free", "")}
+                    </span>
+                  )}
+                </div>
+
+                {/* Copy / Regenerate Actions */}
+                {!isStreaming && (
+                  <div className="flex items-center gap-1 opacity-70 hover:opacity-100 transition-opacity">
+                    <button
+                      onClick={handleCopy}
+                      className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
+                      title="Copy answer"
+                      aria-label="Copy response"
+                    >
+                      {copied ? <Check className="w-3.5 h-3.5 text-status-success" /> : <Copy className="w-3.5 h-3.5" />}
+                    </button>
+                    {onRegenerate && (
+                      <button
+                        onClick={onRegenerate}
+                        className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
+                        title="Regenerate answer"
+                        aria-label="Regenerate response"
+                      >
+                        <RotateCw className="w-3.5 h-3.5" />
+                      </button>
+                    )}
+                  </div>
                 )}
               </div>
-            )}
-          </div>
 
-          {/* Markdown Content */}
-          <div className="text-sm prose-apple">
-            {renderCustomMarkdown(message.content)}
-            {isStreaming && (
-              <span className="inline-block w-1.5 h-4 ml-1 bg-accent animate-pulse align-middle" />
-            )}
-          </div>
+              {/* Rendered Text */}
+              <div className="prose-apple">
+                {renderCustomMarkdown(message.content)}
+                {isStreaming && (
+                  <span className="inline-block w-1.5 h-4 ml-1 bg-foreground animate-pulse align-middle" />
+                )}
+              </div>
 
-          {/* Source Citations Section */}
-          {isAssistant && message.source_references && message.source_references.length > 0 && (
-            <div className="mt-4 pt-3 border-t border-border/80">
-              <div className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-2 flex items-center gap-1.5">
-                <FileText className="w-3.5 h-3.5 text-accent" />
-                Verified Citations ({message.source_references.length})
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                {message.source_references.map((citation) => (
-                  <button
-                    key={citation.citation_id}
-                    onClick={() => openCitation(citation)}
-                    className="text-left p-2.5 rounded-lg bg-surface border border-border hover:border-accent/40 hover:bg-surface-hover transition-all group flex items-start gap-2 shadow-subtle"
-                  >
-                    <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-accent-subtle text-accent border border-accent/20 flex-shrink-0 group-hover:bg-accent group-hover:text-accent-foreground transition-colors">
-                      [{citation.citation_id}]
-                    </span>
-                    <div className="min-w-0 flex-1">
-                      <div className="text-xs font-medium text-foreground truncate group-hover:text-accent transition-colors">
-                        {citation.document_title}
-                      </div>
-                      <div className="text-[11px] text-muted-foreground truncate mt-0.5">
-                        {citation.page_number ? `Page ${citation.page_number}` : "Section"}
-                        {citation.section_title ? ` · ${citation.section_title}` : ""}
-                      </div>
-                    </div>
-                  </button>
-                ))}
-              </div>
+              {/* Source References Section */}
+              {message.source_references && message.source_references.length > 0 && (
+                <div className="mt-4 pt-3.5 border-t border-black/6 dark:border-white/10">
+                  <div className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-2.5 flex items-center gap-1.5">
+                    <FileText className="w-3.5 h-3.5 opacity-80" />
+                    Verified Citations ({message.source_references.length})
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    {message.source_references.map((citation) => (
+                      <button
+                        key={citation.citation_id}
+                        onClick={() => openCitation(citation)}
+                        className="text-left p-3 rounded-xl bg-surface border border-black/6 dark:border-white/10 hover:border-foreground/30 hover:bg-surface-hover transition-all group flex items-start gap-2.5 shadow-subtle"
+                      >
+                        <span className="text-[10px] font-mono font-medium px-1.5 py-0.5 rounded bg-black/6 dark:bg-white/12 text-foreground border border-black/10 dark:border-white/15 flex-shrink-0 group-hover:bg-foreground group-hover:text-background transition-colors">
+                          [{citation.citation_id}]
+                        </span>
+                        <div className="min-w-0 flex-1">
+                          <div className="text-xs font-semibold text-foreground truncate group-hover:opacity-90">
+                            {citation.document_title}
+                          </div>
+                          <div className="text-[11px] text-muted-foreground truncate mt-0.5">
+                            {citation.page_number ? `Page ${citation.page_number}` : "Section"}
+                            {citation.section_title ? ` · ${citation.section_title}` : ""}
+                          </div>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
-          )}
-        </div>
+          </div>
+        )}
       </div>
     </div>
   );
